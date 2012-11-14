@@ -34,6 +34,10 @@ public class RepoUpdater
 		this.localRepoPath = new String(localRepoPath);
 		this.savePath = new String(savePath);
 		
+		File dir = new File(savePath);
+		if(!dir.exists())
+			dir.mkdir();
+		
 		artifacts = new HashMap<DefaultArtifact, String>();
 		repos = new ArrayList<RemoteRepository>();
 	}
@@ -216,8 +220,9 @@ public class RepoUpdater
 		{
 			File oldFile = new File(from);
 			File newFile = new File(to);
+
 			if(oldFile.isFile())
-			{
+			{	
 				byte[] buffer = new byte[1024];
 				int byteRead = 0;
 				InputStream inputStream = new FileInputStream(oldFile);
