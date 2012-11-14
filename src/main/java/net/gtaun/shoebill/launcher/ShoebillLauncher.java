@@ -2,6 +2,7 @@ package net.gtaun.shoebill.launcher;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Map;
 
 public class ShoebillLauncher
 {
@@ -15,9 +16,15 @@ public class ShoebillLauncher
 			RepoUpdater pluginsRepoUpdater = new RepoUpdater("shoebill/local-repo", "shoebill/plugins");
 			RepoUpdater gamemodesRepoUpdater = new RepoUpdater("shoebill/local-repo", "shoebill/gamemodes");
 			
-			runtimeRepoUpdater.AddRemoteRepo("central", "default", "http://repo1.maven.org/maven2/");
-			pluginsRepoUpdater.AddRemoteRepo("central", "default", "http://repo1.maven.org/maven2/");
-			gamemodesRepoUpdater.AddRemoteRepo("central", "default", "http://repo1.maven.org/maven2/");
+			for (Map<String, Object> repo: config.getRepositories())
+			{
+				String id = repo.get("id").toString();
+				String type = repo.get("type").toString();
+				String url = repo.get("url").toString();
+				runtimeRepoUpdater.AddRemoteRepo(id, type, url);
+				pluginsRepoUpdater.AddRemoteRepo(id, type, url);
+				gamemodesRepoUpdater.AddRemoteRepo(id, type, url);
+			}
 			
 			runtimeRepoUpdater.AddDependency(config.getRuntimeLibrary(), "compile");
 			pluginsRepoUpdater.AddDependencies(config.getPlugins(), "compile");
