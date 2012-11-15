@@ -27,38 +27,34 @@ import java.util.Map;
  */
 public class ShoebillDependencyManager
 {
+	private static final String SHOEBILL_PATH = "./shoebill/";
+	
+	
 	public static void main(String[] args) throws Exception
 	{
-		try
+		ResourceConfig config = new ResourceConfig(new FileInputStream(new File(SHOEBILL_PATH + "resources.yml")));
+		
+		RepoUpdater runtimeRepoUpdater = new RepoUpdater(SHOEBILL_PATH + "local-repo", SHOEBILL_PATH + "libraries");
+		RepoUpdater pluginsRepoUpdater = new RepoUpdater(SHOEBILL_PATH + "local-repo", SHOEBILL_PATH + "plugins");
+		RepoUpdater gamemodesRepoUpdater = new RepoUpdater(SHOEBILL_PATH + "local-repo", SHOEBILL_PATH + "gamemodes");
+		
+		for (Map<String, Object> repo: config.getRepositories())
 		{
-			ResourceConfig config = new ResourceConfig( new FileInputStream( new File( "resources.yml" ) ) );
-			
-			RepoUpdater runtimeRepoUpdater = new RepoUpdater("shoebill/local-repo", "shoebill/libraries");
-			RepoUpdater pluginsRepoUpdater = new RepoUpdater("shoebill/local-repo", "shoebill/plugins");
-			RepoUpdater gamemodesRepoUpdater = new RepoUpdater("shoebill/local-repo", "shoebill/gamemodes");
-			
-			for (Map<String, Object> repo: config.getRepositories())
-			{
-				String id = repo.get("id").toString();
-				String type = repo.get("type").toString();
-				String url = repo.get("url").toString();
-				runtimeRepoUpdater.AddRemoteRepo(id, type, url);
-				pluginsRepoUpdater.AddRemoteRepo(id, type, url);
-				gamemodesRepoUpdater.AddRemoteRepo(id, type, url);
-			}
-			
-			runtimeRepoUpdater.AddDependency(config.getRuntimeLibrary(), "compile");
-			pluginsRepoUpdater.AddDependencies(config.getPlugins(), "compile");
-			gamemodesRepoUpdater.AddDependencies(config.getGamemodes(), "compile");
-			
-			runtimeRepoUpdater.UpdateDependencies();
-			pluginsRepoUpdater.UpdateDependencies();
-			gamemodesRepoUpdater.UpdateDependencies();
+			String id = repo.get("id").toString();
+			String type = repo.get("type").toString();
+			String url = repo.get("url").toString();
+			runtimeRepoUpdater.AddRemoteRepo(id, type, url);
+			pluginsRepoUpdater.AddRemoteRepo(id, type, url);
+			gamemodesRepoUpdater.AddRemoteRepo(id, type, url);
 		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
+		
+		runtimeRepoUpdater.AddDependency(config.getRuntimeLibrary(), "compile");
+		pluginsRepoUpdater.AddDependencies(config.getPlugins(), "compile");
+		gamemodesRepoUpdater.AddDependencies(config.getGamemodes(), "compile");
+		
+		runtimeRepoUpdater.UpdateDependencies();
+		pluginsRepoUpdater.UpdateDependencies();
+		gamemodesRepoUpdater.UpdateDependencies();
 	}
 	/*private static File findFile(File dir, String target)
 	{

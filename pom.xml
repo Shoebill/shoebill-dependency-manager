@@ -107,6 +107,7 @@
 			<artifactId>wagon-ssh</artifactId>
 			<version>${wagonVersion}</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>net.gtaun</groupId>
 			<artifactId>shoebill-utilities</artifactId>
@@ -137,20 +138,6 @@
 					<source>1.7</source>
 					<target>1.7</target>
 				</configuration>
-			</plugin>
-			
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>2.2.1</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 
 			<plugin>
