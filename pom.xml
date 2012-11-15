@@ -1,92 +1,123 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>net.gtaun</groupId>
-	<artifactId>shoebill-launcher</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
-  
-  	<name>Shoebill Launcher</name>
-	<description>Shoebill Launcher</description>
-	<url>https://github.com/Shoebill</url>
+	
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
 	
 	<properties>
-	    <aetherVersion>1.12</aetherVersion>
-	    <mavenVersion>3.0.3</mavenVersion>
-	    <wagonVersion>1.0-beta-7</wagonVersion>
-  	</properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<aetherVersion>1.13.1</aetherVersion>
+		<mavenVersion>3.0.4</mavenVersion>
+		<wagonVersion>2.2</wagonVersion>
+	</properties>
 	
-  
-  	<dependencies>
-    	<dependency>
-      		<groupId>org.sonatype.aether</groupId>
-      		<artifactId>aether-api</artifactId>
-      		<version>${aetherVersion}</version>
-    	</dependency>
-    	
-    	<dependency>
-		    <groupId>org.sonatype.aether</groupId>
-		    <artifactId>aether-util</artifactId>
-		    <version>${aetherVersion}</version>
-    	</dependency>
-    	
-    	<dependency>
-		    <groupId>org.sonatype.aether</groupId>
-		    <artifactId>aether-impl</artifactId>
-		    <version>${aetherVersion}</version>
+	<groupId>net.gtaun</groupId>
+	<artifactId>shoebill-dependency-manager</artifactId>
+	<version>0.1.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>Shoebill Dependency Manager</name>
+	<description>Shoebill Dependency Manager</description>
+	<url>https://github.com/Shoebill</url>
+
+	<licenses>
+		<license>
+			<name>Apache License,Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+		</license>
+	</licenses>
+	
+	<scm>
+		<url>https://github.com/Shoebill/shoebill-dependency-manager</url>
+		<connection>https://github.com/Shoebill/shoebill-dependency-manager.git</connection>
+		<developerConnection>scm:git:git@github.com:Shoebill/shoebill-dependency-manager.git</developerConnection>
+	</scm>
+	
+	<developers>
+		<developer>
+			<name>JoJLlmAn</name>
+			<id>JoJLlmAn</id>
+			<url>https://github.com/JoJLlmAn</url>
+			<email>jojllman@gmail.com</email>
+			<organization>Shoebill</organization>
+			<organizationUrl>https://github.com/Shoebill</organizationUrl>
+			<timezone>+8</timezone>
+		</developer>
+	</developers>
+	
+	<ciManagement>
+		<system>jenkins</system>
+		<url>http://ci.gtaun.net</url>
+	</ciManagement>
+
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/Shoebill/shoebill-dependency-manager/issues</url>
+	</issueManagement>
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.sonatype.aether</groupId>
+			<artifactId>aether-api</artifactId>
+			<version>${aetherVersion}</version>
 		</dependency>
-		
-    	<dependency>
-		    <groupId>org.sonatype.aether</groupId>
-		    <artifactId>aether-connector-file</artifactId>
-		    <version>${aetherVersion}</version>
-    	</dependency>
-    	
-	    <dependency>
-		    <groupId>org.sonatype.aether</groupId>
-		    <artifactId>aether-connector-asynchttpclient</artifactId>
-		    <version>${aetherVersion}</version>
-	    </dependency>
-	    
-    	<dependency>
-      		<groupId>org.sonatype.aether</groupId>
-      		<artifactId>aether-connector-wagon</artifactId>
-      		<version>${aetherVersion}</version>
-    	</dependency>
-    	
-    	<dependency>
-      		<groupId>org.apache.maven</groupId>
-      		<artifactId>maven-aether-provider</artifactId>
-      		<version>${mavenVersion}</version>
-    	</dependency>
-    	
-    	<dependency>
-      		<groupId>org.apache.maven.wagon</groupId>
-      		<artifactId>wagon-ssh</artifactId>
-      		<version>${wagonVersion}</version>
-    	</dependency>
-    	
-    	<dependency>
+
+		<dependency>
+			<groupId>org.sonatype.aether</groupId>
+			<artifactId>aether-util</artifactId>
+			<version>${aetherVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.sonatype.aether</groupId>
+			<artifactId>aether-impl</artifactId>
+			<version>${aetherVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.sonatype.aether</groupId>
+			<artifactId>aether-connector-file</artifactId>
+			<version>${aetherVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.sonatype.aether</groupId>
+			<artifactId>aether-connector-asynchttpclient</artifactId>
+			<version>${aetherVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.sonatype.aether</groupId>
+			<artifactId>aether-connector-wagon</artifactId>
+			<version>${aetherVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-aether-provider</artifactId>
+			<version>${mavenVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.maven.wagon</groupId>
+			<artifactId>wagon-ssh</artifactId>
+			<version>${wagonVersion}</version>
+		</dependency>
+		<dependency>
 			<groupId>net.gtaun</groupId>
-			<artifactId>shoebill-api</artifactId>
-			<version>0.2.0-SNAPSHOT</version>
-			<type>jar</type>
-			<scope>compile</scope>
+			<artifactId>shoebill-utilities</artifactId>
+			<version>0.1.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
-	
-  	<build>
+
+	<build>
 		<defaultGoal>clean install</defaultGoal>
 
 		<resources>
-			<resource>
-				<targetPath>.</targetPath>
-				<directory>${basedir}/src/main/resources</directory>
-				<filtering>false</filtering>
-				<includes>
-					<include>log4j.properties</include>
-				</includes>
-			</resource>
-
 			<resource>
 				<targetPath>.</targetPath>
 				<directory>${basedir}/src/main/resources</directory>
@@ -107,24 +138,7 @@
 					<target>1.7</target>
 				</configuration>
 			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9</version>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-						<configuration>
-							<locale>en_US</locale>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
@@ -219,5 +233,5 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-  
+
 </project>
