@@ -25,8 +25,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.gtaun.shoebill.dependency.util.Booter;
+
 import org.apache.maven.repository.internal.MavenRepositorySystemSession;
-import org.codehaus.plexus.DefaultPlexusContainer;
 import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.RepositorySystemSession;
 import org.sonatype.aether.collection.CollectRequest;
@@ -38,6 +39,7 @@ import org.sonatype.aether.resolution.DependencyRequest;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 import org.sonatype.aether.util.graph.PreorderNodeListGenerator;
 
+
 /**
  * 
  * 
@@ -45,6 +47,42 @@ import org.sonatype.aether.util.graph.PreorderNodeListGenerator;
  */
 public class RepoUpdater
 {
+	private static boolean copyFile(String from, String to)
+	{
+		try
+		{
+			File oldFile = new File(from);
+			File newFile = new File(to);
+			
+			if (oldFile.isFile())
+			{
+				byte[] buffer = new byte[1024];
+				int byteRead = 0;
+				InputStream inputStream = new FileInputStream(oldFile);
+				FileOutputStream outputStream = new FileOutputStream(newFile, false);
+				while ((byteRead = inputStream.read(buffer)) != -1)
+				{
+					outputStream.write(buffer, 0, byteRead);
+				}
+				
+				inputStream.close();
+				outputStream.close();
+			}
+			else
+			{
+				return false;
+			}
+			
+			return true;
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	
 	private String localRepoPath;
 	private String savePath;
 	private Map<DefaultArtifact, String> artifacts;
@@ -67,7 +105,7 @@ public class RepoUpdater
 	{
 		try
 		{
-			RepositorySystem repoSystem = newRepositorySystem();
+			RepositorySystem repoSystem = Booter.newRepositorySystem();
 			RepositorySystemSession session = newSession(repoSystem);
 			CollectRequest collectRequest = new CollectRequest();
 			
@@ -228,46 +266,6 @@ public class RepoUpdater
 	public void ClearRemoteRepo()
 	{
 		repos.clear();
-	}
-	
-	private static boolean copyFile(String from, String to)
-	{
-		try
-		{
-			File oldFile = new File(from);
-			File newFile = new File(to);
-			
-			if (oldFile.isFile())
-			{
-				byte[] buffer = new byte[1024];
-				int byteRead = 0;
-				InputStream inputStream = new FileInputStream(oldFile);
-				FileOutputStream outputStream = new FileOutputStream(newFile, false);
-				while ((byteRead = inputStream.read(buffer)) != -1)
-				{
-					outputStream.write(buffer, 0, byteRead);
-				}
-				
-				inputStream.close();
-				outputStream.close();
-			}
-			else
-			{
-				return false;
-			}
-			
-			return true;
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			return false;
-		}
-	}
-	
-	private static RepositorySystem newRepositorySystem() throws Exception
-	{
-		return new DefaultPlexusContainer().lookup(RepositorySystem.class);
 	}
 	
 	private RepositorySystemSession newSession(RepositorySystem system)

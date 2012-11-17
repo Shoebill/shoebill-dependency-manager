@@ -47,6 +47,16 @@
 			<organizationUrl>https://github.com/Shoebill</organizationUrl>
 			<timezone>+8</timezone>
 		</developer>
+		
+		<developer>
+			<name>MK124</name>
+			<id>MK124</id>
+			<url>https://github.com/mk124</url>
+			<email>mk124a@gmail.com</email>
+			<organization>Shoebill</organization>
+			<organizationUrl>https://github.com/Shoebill</organizationUrl>
+			<timezone>+8</timezone>
+		</developer>
 	</developers>
 	
 	<ciManagement>
@@ -105,6 +115,12 @@
 		<dependency>
 			<groupId>org.apache.maven.wagon</groupId>
 			<artifactId>wagon-ssh</artifactId>
+			<version>${wagonVersion}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.maven.wagon</groupId>
+			<artifactId>wagon-http</artifactId>
 			<version>${wagonVersion}</version>
 		</dependency>
 		

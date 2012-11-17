@@ -32,8 +32,6 @@ public class ShoebillDependencyManager
 	
 	public static void main(String[] args) throws Exception
 	{
-		Class.forName("org.sonatype.aether.impl.internal.DefaultRepositorySystem");
-		
 		ResourceConfig config = new ResourceConfig(new FileInputStream(new File(SHOEBILL_PATH + "resources.yml")));
 		
 		RepoUpdater runtimeRepoUpdater = new RepoUpdater(SHOEBILL_PATH + "local-repo", SHOEBILL_PATH + "libraries");
