@@ -22,16 +22,13 @@ import org.sonatype.aether.transfer.TransferResource;
 /**
  * A simplistic transfer listener that logs uploads/downloads to the console.
  */
-public class ConsoleTransferListener
-    extends AbstractTransferListener
+public class ConsoleTransferListener extends AbstractTransferListener
 {
-
     private PrintStream out;
-
     private Map<TransferResource, Long> downloads = new ConcurrentHashMap<TransferResource, Long>();
-
     private int lastLength;
 
+    
     public ConsoleTransferListener()
     {
         this( null );

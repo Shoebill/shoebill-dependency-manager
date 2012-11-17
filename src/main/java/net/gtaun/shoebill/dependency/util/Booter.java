@@ -8,6 +8,8 @@ package net.gtaun.shoebill.dependency.util;
  *   http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
+import java.io.File;
+
 import net.gtaun.shoebill.dependency.manual.ManualRepositorySystemFactory;
 
 import org.apache.maven.repository.internal.MavenRepositorySystemSession;
@@ -28,14 +30,14 @@ public class Booter
         return ManualRepositorySystemFactory.newRepositorySystem();
     }
 
-    public static RepositorySystemSession newRepositorySystemSession( RepositorySystem system )
+    public static RepositorySystemSession newRepositorySystemSession( RepositorySystem system, File repoDir )
     {
         MavenRepositorySystemSession session = new MavenRepositorySystemSession();
-
-        LocalRepository localRepo = new LocalRepository( "target/local-repo" );
+        
+        LocalRepository localRepo = new LocalRepository( repoDir );
         session.setLocalRepositoryManager( system.newLocalRepositoryManager( localRepo ) );
 
-        session.setTransferListener( new ConsoleTransferListener() );
+        //session.setTransferListener( new ConsoleTransferListener() );
         session.setRepositoryListener( new ConsoleRepositoryListener() );
 
         // uncomment to generate dirty trees
@@ -48,5 +50,4 @@ public class Booter
     {
         return new RemoteRepository( "central", "default", "http://repo1.maven.org/maven2/" );
     }
-
 }
