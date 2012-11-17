@@ -26,6 +26,11 @@ public class ManualWagonProvider
         {
             return new HttpWagon();
         }
+        if ( "https".equals( roleHint ) )
+        {
+            return new HttpWagon();
+        }
+        
         return null;
     }
 

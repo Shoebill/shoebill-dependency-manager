@@ -21,16 +21,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.Map;
 
-import net.gtaun.shoebill.dependency.util.Booter;
 
 import org.sonatype.aether.RepositorySystem;
-import org.sonatype.aether.RepositorySystemSession;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.collection.CollectRequest;
 import org.sonatype.aether.graph.Dependency;
 import org.sonatype.aether.graph.DependencyNode;
 import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.resolution.DependencyRequest;
+import org.sonatype.aether.util.DefaultRepositorySystemSession;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 import org.sonatype.aether.util.graph.PreorderNodeListGenerator;
 
@@ -41,8 +40,8 @@ import org.sonatype.aether.util.graph.PreorderNodeListGenerator;
  */
 public class ShoebillDependencyManager
 {
-	private static final String SHOEBILL_PATH = "./shoebill/";
-	private static final String REPOSITORY_DIR = "repository";
+	private static final String SHOEBILL_PATH = "shoebill/";
+	private static final String REPOSITORY_DIR = "repository/";
 	
 	
 	public static void main(String[] args) throws Exception
@@ -52,11 +51,11 @@ public class ShoebillDependencyManager
 		final File shoebillDir = new File(SHOEBILL_PATH);
 		final File repoDir = new File(shoebillDir, REPOSITORY_DIR);
 		
-		RepositorySystem repoSystem = Booter.newRepositorySystem();
-		RepositorySystemSession session = Booter.newRepositorySystemSession(repoSystem, repoDir);
+		RepositorySystem repoSystem = Util.newRepositorySystem();
+		DefaultRepositorySystemSession session = Util.newRepositorySystemSession(repoSystem, repoDir);
 		CollectRequest collectRequest = new CollectRequest();
 		
-		collectRequest.addRepository(Booter.newCentralRepository());
+		session.setRepositoryListener(new ShoebillRepositoryListener());
 
 		for (Map<String, Object> repo : config.getRepositories())
 		{
@@ -66,11 +65,20 @@ public class ShoebillDependencyManager
 			collectRequest.addRepository(new RemoteRepository(id, type, url));
 		}
 		
-		for (String coords : config.getGamemodes())
+		// Runtime
+		Artifact runtimeArtifact = new DefaultArtifact(config.getRuntime());
+		collectRequest.addDependency(new Dependency(runtimeArtifact, "runtime"));
+		
+		// Plugins
+		for (String coords : config.getPlugins())
 		{
 			Artifact artifact = new DefaultArtifact(coords);
 			collectRequest.addDependency(new Dependency(artifact, "runtime"));
 		}
+		
+		// Gamemode
+		Artifact gamemodeArtifact = new DefaultArtifact(config.getGamemode());
+		collectRequest.addDependency(new Dependency(gamemodeArtifact, "runtime"));
 		
 		DependencyNode node = repoSystem.collectDependencies(session, collectRequest).getRoot();
 		DependencyRequest dependencyRequest = new DependencyRequest(node, null);

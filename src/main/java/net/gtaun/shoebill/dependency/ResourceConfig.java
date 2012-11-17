@@ -30,9 +30,9 @@ import net.gtaun.shoebill.util.config.YamlConfiguration;
 public class ResourceConfig
 {
 	private List<Map<String, Object>> repositories;
-	private String runtimeLibrary;
+	private String runtime;
 	private List<String> plugins;
-	private List<String> gamemodes;
+	private String gamemode;
 	
 	
 	@SuppressWarnings("unchecked")
@@ -40,11 +40,11 @@ public class ResourceConfig
 	{
 		YamlConfiguration config = new YamlConfiguration();
 		config.read(in);
-		
-		runtimeLibrary = config.getString("runtime");
-		plugins = (List<String>) config.getList("plugins");
-		gamemodes = (List<String>) config.getList("gamemodes");
+
 		repositories = (List<Map<String, Object>>) config.getList("repositories");
+		runtime = config.getString("runtime");
+		plugins = (List<String>) config.getList("plugins");
+		gamemode = config.getString("gamemodes");
 	}
 	
 	public List<Map<String, Object>> getRepositories()
@@ -52,9 +52,9 @@ public class ResourceConfig
 		return repositories;
 	}
 	
-	public String getRuntimeLibrary()
+	public String getRuntime()
 	{
-		return runtimeLibrary;
+		return runtime;
 	}
 	
 	public List<String> getPlugins()
@@ -62,8 +62,8 @@ public class ResourceConfig
 		return plugins;
 	}
 	
-	public List<String> getGamemodes()
+	public String getGamemode()
 	{
-		return gamemodes;
+		return gamemode;
 	}
 }
