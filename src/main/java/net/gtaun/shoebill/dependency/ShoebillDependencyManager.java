@@ -32,13 +32,15 @@ public class ShoebillDependencyManager
 	
 	public static void main(String[] args) throws Exception
 	{
+		Class.forName("org.sonatype.aether.impl.internal.DefaultRepositorySystem");
+		
 		ResourceConfig config = new ResourceConfig(new FileInputStream(new File(SHOEBILL_PATH + "resources.yml")));
 		
 		RepoUpdater runtimeRepoUpdater = new RepoUpdater(SHOEBILL_PATH + "local-repo", SHOEBILL_PATH + "libraries");
 		RepoUpdater pluginsRepoUpdater = new RepoUpdater(SHOEBILL_PATH + "local-repo", SHOEBILL_PATH + "plugins");
 		RepoUpdater gamemodesRepoUpdater = new RepoUpdater(SHOEBILL_PATH + "local-repo", SHOEBILL_PATH + "gamemodes");
 		
-		for (Map<String, Object> repo: config.getRepositories())
+		for (Map<String, Object> repo : config.getRepositories())
 		{
 			String id = repo.get("id").toString();
 			String type = repo.get("type").toString();
@@ -56,24 +58,26 @@ public class ShoebillDependencyManager
 		pluginsRepoUpdater.UpdateDependencies();
 		gamemodesRepoUpdater.UpdateDependencies();
 	}
-	/*private static File findFile(File dir, String target)
-	{
-		File fileFound = null;
-		for (File file : dir.listFiles())
-		{
-			if(file.isDirectory())
-			{
-				fileFound = findFile(file, target);
-				if(fileFound != null)
-					break;
-			}
-			else if(target.compareTo(file.getName()) == 0)
-			{
-				fileFound = file;
-				break;
-			}
-		}
-		
-		return fileFound;
-	}*/
+	/*
+	 * private static File findFile(File dir, String target)
+	 * {
+	 * File fileFound = null;
+	 * for (File file : dir.listFiles())
+	 * {
+	 * if(file.isDirectory())
+	 * {
+	 * fileFound = findFile(file, target);
+	 * if(fileFound != null)
+	 * break;
+	 * }
+	 * else if(target.compareTo(file.getName()) == 0)
+	 * {
+	 * fileFound = file;
+	 * break;
+	 * }
+	 * }
+	 * 
+	 * return fileFound;
+	 * }
+	 */
 }

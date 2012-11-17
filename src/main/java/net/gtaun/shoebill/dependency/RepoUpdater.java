@@ -50,14 +50,14 @@ public class RepoUpdater
 	private Map<DefaultArtifact, String> artifacts;
 	private ArrayList<RemoteRepository> repos;
 	
+	
 	public RepoUpdater(String localRepoPath, String savePath)
 	{
 		this.localRepoPath = new String(localRepoPath);
 		this.savePath = new String(savePath);
 		
 		File dir = new File(savePath);
-		if(!dir.exists())
-			dir.mkdir();
+		if (!dir.exists()) dir.mkdir();
 		
 		artifacts = new HashMap<DefaultArtifact, String>();
 		repos = new ArrayList<RemoteRepository>();
@@ -68,7 +68,7 @@ public class RepoUpdater
 		try
 		{
 			RepositorySystem repoSystem = newRepositorySystem();
-			RepositorySystemSession session = newSession( repoSystem );
+			RepositorySystemSession session = newSession(repoSystem);
 			CollectRequest collectRequest = new CollectRequest();
 			
 			for (DefaultArtifact artifact : artifacts.keySet())
@@ -79,12 +79,12 @@ public class RepoUpdater
 			{
 				collectRequest.addRepository(repo);
 			}
-				
-			DependencyNode node = repoSystem.collectDependencies( session, collectRequest ).getRoot();
-			DependencyRequest dependencyRequest = new DependencyRequest( node, null );
-			repoSystem.resolveDependencies( session, dependencyRequest  );
+			
+			DependencyNode node = repoSystem.collectDependencies(session, collectRequest).getRoot();
+			DependencyRequest dependencyRequest = new DependencyRequest(node, null);
+			repoSystem.resolveDependencies(session, dependencyRequest);
 			PreorderNodeListGenerator nlg = new PreorderNodeListGenerator();
-			node.accept( nlg );
+			node.accept(nlg);
 			
 			for (String string : nlg.getClassPath().split(";"))
 			{
@@ -102,10 +102,9 @@ public class RepoUpdater
 		try
 		{
 			DefaultArtifact artifact = new DefaultArtifact(coords);
-			if(artifact != null)
+			if (artifact != null)
 			{
-				if(!artifacts.containsKey(artifact))
-					artifacts.put(artifact, scope);
+				if (!artifacts.containsKey(artifact)) artifacts.put(artifact, scope);
 			}
 		}
 		catch (Exception e)
@@ -116,10 +115,9 @@ public class RepoUpdater
 	
 	public void AddDependency(DefaultArtifact artifact, String scope)
 	{
-		if(artifact != null)
+		if (artifact != null)
 		{
-			if(!artifacts.containsKey(artifact))
-				artifacts.put(artifact, scope);
+			if (!artifacts.containsKey(artifact)) artifacts.put(artifact, scope);
 		}
 	}
 	
@@ -130,10 +128,9 @@ public class RepoUpdater
 			for (String string : coords)
 			{
 				DefaultArtifact artifact = new DefaultArtifact(string);
-				if(artifact != null)
+				if (artifact != null)
 				{
-					if(!artifacts.containsKey(artifact))
-						artifacts.put(artifact, scope);
+					if (!artifacts.containsKey(artifact)) artifacts.put(artifact, scope);
 				}
 			}
 		}
@@ -148,8 +145,7 @@ public class RepoUpdater
 		try
 		{
 			DefaultArtifact artifact = new DefaultArtifact(coords);
-			if(artifacts.containsKey(artifact))
-				artifacts.remove(artifact);
+			if (artifacts.containsKey(artifact)) artifacts.remove(artifact);
 		}
 		catch (Exception e)
 		{
@@ -159,8 +155,7 @@ public class RepoUpdater
 	
 	public void RemoveDependency(DefaultArtifact artifact)
 	{
-		if(artifacts.containsKey(artifact))
-			artifacts.remove(artifact);
+		if (artifacts.containsKey(artifact)) artifacts.remove(artifact);
 	}
 	
 	public void ClearDependencies()
@@ -172,11 +167,10 @@ public class RepoUpdater
 	{
 		try
 		{
-			RemoteRepository remoteRepo = new RemoteRepository( id, type, url );
-			if(remoteRepo != null)
+			RemoteRepository remoteRepo = new RemoteRepository(id, type, url);
+			if (remoteRepo != null)
 			{
-				if(!repos.contains(remoteRepo))
-					repos.add(remoteRepo);
+				if (!repos.contains(remoteRepo)) repos.add(remoteRepo);
 			}
 		}
 		catch (Exception e)
@@ -187,10 +181,9 @@ public class RepoUpdater
 	
 	public void AddRemoteRepo(RemoteRepository remoteRepo)
 	{
-		if(remoteRepo != null)
+		if (remoteRepo != null)
 		{
-			if(!repos.contains(remoteRepo))
-				repos.add(remoteRepo);
+			if (!repos.contains(remoteRepo)) repos.add(remoteRepo);
 		}
 	}
 	
@@ -198,17 +191,18 @@ public class RepoUpdater
 	{
 		try
 		{
-			RemoteRepository remoteRepo = new RemoteRepository( id, type, url );
-			if(repos.contains(remoteRepo))
-				repos.remove(remoteRepo);
-			/*for (RemoteRepository repo : repos)
-			{
-				if(repo.equals(remoteRepo))
-				{
-					repos.remove(repo);
-					break;
-				}
-			}*/
+			RemoteRepository remoteRepo = new RemoteRepository(id, type, url);
+			if (repos.contains(remoteRepo)) repos.remove(remoteRepo);
+			/*
+			 * for (RemoteRepository repo : repos)
+			 * {
+			 * if(repo.equals(remoteRepo))
+			 * {
+			 * repos.remove(repo);
+			 * break;
+			 * }
+			 * }
+			 */
 		}
 		catch (Exception e)
 		{
@@ -218,16 +212,17 @@ public class RepoUpdater
 	
 	public void RemoveRemoteRepo(RemoteRepository remoteRepo)
 	{
-		if(repos.contains(remoteRepo))
-			repos.remove(remoteRepo);
-		/*for (RemoteRepository repo : repos)
-		{
-			if(repo.equals(remoteRepo))
-			{
-				repos.remove(repo);
-				break;
-			}
-		}*/
+		if (repos.contains(remoteRepo)) repos.remove(remoteRepo);
+		/*
+		 * for (RemoteRepository repo : repos)
+		 * {
+		 * if(repo.equals(remoteRepo))
+		 * {
+		 * repos.remove(repo);
+		 * break;
+		 * }
+		 * }
+		 */
 	}
 	
 	public void ClearRemoteRepo()
@@ -241,14 +236,14 @@ public class RepoUpdater
 		{
 			File oldFile = new File(from);
 			File newFile = new File(to);
-
-			if(oldFile.isFile())
-			{	
+			
+			if (oldFile.isFile())
+			{
 				byte[] buffer = new byte[1024];
 				int byteRead = 0;
 				InputStream inputStream = new FileInputStream(oldFile);
 				FileOutputStream outputStream = new FileOutputStream(newFile, false);
-				while( (byteRead = inputStream.read(buffer)) != -1)
+				while ((byteRead = inputStream.read(buffer)) != -1)
 				{
 					outputStream.write(buffer, 0, byteRead);
 				}
@@ -272,16 +267,16 @@ public class RepoUpdater
 	
 	private static RepositorySystem newRepositorySystem() throws Exception
 	{
-	    return new DefaultPlexusContainer().lookup( RepositorySystem.class );
+		return new DefaultPlexusContainer().lookup(RepositorySystem.class);
 	}
-
-	private RepositorySystemSession newSession( RepositorySystem system )
-    {
-        MavenRepositorySystemSession session = new MavenRepositorySystemSession();
-
-        LocalRepository localRepo = new LocalRepository( localRepoPath );
-        session.setLocalRepositoryManager( system.newLocalRepositoryManager( localRepo ) );
-
-        return session;
-    }
+	
+	private RepositorySystemSession newSession(RepositorySystem system)
+	{
+		MavenRepositorySystemSession session = new MavenRepositorySystemSession();
+		
+		LocalRepository localRepo = new LocalRepository(localRepoPath);
+		session.setLocalRepositoryManager(system.newLocalRepositoryManager(localRepo));
+		
+		return session;
+	}
 }

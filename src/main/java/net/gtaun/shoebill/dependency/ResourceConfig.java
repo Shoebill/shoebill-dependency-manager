@@ -32,18 +32,19 @@ public class ResourceConfig
 	private String runtimeLibrary;
 	private List<String> plugins;
 	private List<String> gamemodes;
-	private List<Map<String, Object>> repositories; 
+	private List<Map<String, Object>> repositories;
+	
 	
 	@SuppressWarnings("unchecked")
 	public ResourceConfig(InputStream in)
 	{
 		YamlConfiguration config = new YamlConfiguration();
 		config.read(in);
-	
+		
 		runtimeLibrary = config.getString("runtime");
 		plugins = (List<String>) config.getList("plugins");
 		gamemodes = (List<String>) config.getList("gamemodes");
-		repositories = (List<Map<String,Object>>) config.getList("repositories");
+		repositories = (List<Map<String, Object>>) config.getList("repositories");
 	}
 	
 	public String getRuntimeLibrary()
