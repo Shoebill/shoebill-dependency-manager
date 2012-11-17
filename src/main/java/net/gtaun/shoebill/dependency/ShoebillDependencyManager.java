@@ -19,8 +19,8 @@ package net.gtaun.shoebill.dependency;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.List;
 import java.util.Map;
-
 
 import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.artifact.Artifact;
@@ -45,6 +45,12 @@ public class ShoebillDependencyManager
 	
 	
 	public static void main(String[] args) throws Exception
+	{
+		List<File> files = resolveDependencies();
+		for (File file : files) System.out.println(file);
+	}
+	
+	public static List<File> resolveDependencies() throws Exception
 	{
 		ResourceConfig config = new ResourceConfig(new FileInputStream(new File(SHOEBILL_PATH + "resources.yml")));
 		
@@ -83,7 +89,10 @@ public class ShoebillDependencyManager
 		DependencyNode node = repoSystem.collectDependencies(session, collectRequest).getRoot();
 		DependencyRequest dependencyRequest = new DependencyRequest(node, null);
 		repoSystem.resolveDependencies(session, dependencyRequest);
+		
 		PreorderNodeListGenerator nlg = new PreorderNodeListGenerator();
 		node.accept(nlg);
+		
+		return nlg.getFiles();
 	}
 }
