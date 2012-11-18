@@ -90,18 +90,6 @@
 
 		<dependency>
 			<groupId>org.sonatype.aether</groupId>
-			<artifactId>aether-connector-file</artifactId>
-			<version>${aetherVersion}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.sonatype.aether</groupId>
-			<artifactId>aether-connector-asynchttpclient</artifactId>
-			<version>${aetherVersion}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.sonatype.aether</groupId>
 			<artifactId>aether-connector-wagon</artifactId>
 			<version>${aetherVersion}</version>
 		</dependency>
@@ -120,13 +108,19 @@
 		
 		<dependency>
 			<groupId>org.apache.maven.wagon</groupId>
-			<artifactId>wagon-ssh</artifactId>
+			<artifactId>wagon-http</artifactId>
 			<version>${wagonVersion}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.apache.maven.wagon</groupId>
-			<artifactId>wagon-http</artifactId>
+			<artifactId>wagon-ftp</artifactId>
+			<version>${wagonVersion}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.maven.wagon</groupId>
+			<artifactId>wagon-file</artifactId>
 			<version>${wagonVersion}</version>
 		</dependency>
 		

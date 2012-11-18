@@ -1,12 +1,20 @@
-package net.gtaun.shoebill.dependency.manual;
+/**
+ * Copyright (C) 2012 MK124
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-/*******************************************************************************
- * Copyright (c) 2010-2011 Sonatype, Inc.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- *   http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
+package net.gtaun.shoebill.dependency.manual;
 
 import org.apache.maven.repository.internal.DefaultArtifactDescriptorReader;
 import org.apache.maven.repository.internal.DefaultVersionRangeResolver;
@@ -14,7 +22,6 @@ import org.apache.maven.repository.internal.DefaultVersionResolver;
 import org.apache.maven.repository.internal.SnapshotMetadataGeneratorFactory;
 import org.apache.maven.repository.internal.VersionsMetadataGeneratorFactory;
 import org.sonatype.aether.RepositorySystem;
-import org.sonatype.aether.connector.file.FileRepositoryConnectorFactory;
 import org.sonatype.aether.connector.wagon.WagonProvider;
 import org.sonatype.aether.connector.wagon.WagonRepositoryConnectorFactory;
 import org.sonatype.aether.impl.ArtifactDescriptorReader;
@@ -25,31 +32,26 @@ import org.sonatype.aether.impl.internal.DefaultServiceLocator;
 import org.sonatype.aether.spi.connector.RepositoryConnectorFactory;
 
 /**
- * A factory for repository system instances that employs Aether's built-in service locator infrastructure to wire up
- * the system's components.
+ * 
+ * 
+ * @author MK124
  */
 public class ManualRepositorySystemFactory
 {
-
-    public static RepositorySystem newRepositorySystem()
-    {
-        /*
-         * Aether's components implement org.sonatype.aether.spi.locator.Service to ease manual wiring and using the
-         * prepopulated DefaultServiceLocator, we only need to register the repository connector factories.
-         */
+	public static RepositorySystem newRepositorySystem()
+	{
 		DefaultServiceLocator locator = new DefaultServiceLocator();
-        locator.addService( RepositoryConnectorFactory.class, FileRepositoryConnectorFactory.class );
-        locator.addService( RepositoryConnectorFactory.class, WagonRepositoryConnectorFactory.class );
-
-        locator.addService( ArtifactDescriptorReader.class, DefaultArtifactDescriptorReader.class );
-        locator.addService( VersionResolver.class, DefaultVersionResolver.class );
-        locator.addService( VersionRangeResolver.class, DefaultVersionRangeResolver.class );
-        locator.addService( MetadataGeneratorFactory.class, SnapshotMetadataGeneratorFactory.class );
-        locator.addService( MetadataGeneratorFactory.class, VersionsMetadataGeneratorFactory.class );
-        
-        locator.setServices( WagonProvider.class, new ManualWagonProvider() );
-
-        return locator.getService( RepositorySystem.class );
-    }
-
+		//locator.addService(RepositoryConnectorFactory.class, FileRepositoryConnectorFactory.class);
+		locator.addService(RepositoryConnectorFactory.class, WagonRepositoryConnectorFactory.class);
+		
+		locator.addService(ArtifactDescriptorReader.class, DefaultArtifactDescriptorReader.class);
+		locator.addService(VersionResolver.class, DefaultVersionResolver.class);
+		locator.addService(VersionRangeResolver.class, DefaultVersionRangeResolver.class);
+		locator.addService(MetadataGeneratorFactory.class, SnapshotMetadataGeneratorFactory.class);
+		locator.addService(MetadataGeneratorFactory.class, VersionsMetadataGeneratorFactory.class);
+		
+		locator.setServices(WagonProvider.class, new ManualWagonProvider());
+		
+		return locator.getService(RepositorySystem.class);
+	}
 }

@@ -11,7 +11,6 @@ import org.sonatype.aether.util.DefaultRepositorySystemSession;
 
 public class Util
 {
-
     public static RepositorySystem newRepositorySystem()
     {
         return ManualRepositorySystemFactory.newRepositorySystem();
