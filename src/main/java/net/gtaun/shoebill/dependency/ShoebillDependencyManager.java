@@ -23,7 +23,8 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+
+import net.gtaun.shoebill.dependency.ResourceConfig.RepositoryEntry;
 
 import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.artifact.Artifact;
@@ -95,12 +96,9 @@ public class ShoebillDependencyManager
 		
 		session.setRepositoryListener(new ShoebillRepositoryListener());
 
-		for (Map<String, Object> repo : config.getRepositories())
+		for (RepositoryEntry repo : config.getRepositories())
 		{
-			String id = repo.get("id").toString();
-			String type = repo.get("type").toString();
-			String url = repo.get("url").toString();
-			collectRequest.addRepository(new RemoteRepository(id, type, url));
+			collectRequest.addRepository(new RemoteRepository(repo.getId(), repo.getType(), repo.getUrl()));
 		}
 		
 		// Runtime
