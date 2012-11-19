@@ -24,7 +24,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.gtaun.shoebill.dependency.ResourceConfig.RepositoryEntry;
+import net.gtaun.shoebill.ResourceConfig;
+import net.gtaun.shoebill.ResourceConfig.RepositoryEntry;
 
 import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.artifact.Artifact;
