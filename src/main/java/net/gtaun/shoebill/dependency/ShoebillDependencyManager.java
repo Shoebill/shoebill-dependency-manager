@@ -48,8 +48,6 @@ import org.sonatype.aether.util.graph.PreorderNodeListGenerator;
  */
 public class ShoebillDependencyManager
 {
-	private static final String SHOEBILL_PATH = "shoebill/";
-	
 	private static final String SCOPE_RUNTIME = "runtime";
 
 	private static final FilenameFilter JAR_FILENAME_FILTER = new FilenameFilter()
@@ -70,10 +68,8 @@ public class ShoebillDependencyManager
 	
 	public static List<File> resolveDependencies() throws Exception
 	{
-		final File shoebillDir = new File(SHOEBILL_PATH);
-		
-		ShoebillConfig shoebillConfig = new ShoebillConfig(new FileInputStream(new File(shoebillDir, "shoebill.yml")));
-		ResourceConfig config = new ResourceConfig(new FileInputStream(new File(shoebillDir, "resources.yml")));
+		ShoebillConfig shoebillConfig = new ShoebillConfig(new FileInputStream(new File("shoebill/shoebill.yml")));
+		ResourceConfig config = new ResourceConfig(new FileInputStream(new File(shoebillConfig.getShoebillDir(), "resources.yml")));
 		
 		final File repoDir = shoebillConfig.getRepositoryDir();
 		final File libDir = shoebillConfig.getLibrariesDir();
