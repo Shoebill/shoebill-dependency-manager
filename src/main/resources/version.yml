@@ -1,0 +1,5 @@
+name: Shoebill Runtime
+version: ${version}
+support: SA-MP 0.3D R2
+buildNumber: ${build.number}
+buildDate: ${build.timestamp}
