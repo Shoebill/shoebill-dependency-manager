@@ -22,7 +22,9 @@ import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.gtaun.shoebill.ResourceConfig;
 import net.gtaun.shoebill.ResourceConfig.RepositoryEntry;
@@ -48,6 +50,9 @@ import org.sonatype.aether.util.graph.PreorderNodeListGenerator;
  */
 public class ShoebillDependencyManager
 {
+	private static final String SHOEBILL_CONFIG_PATH = "./shoebill/shoebill.yml";
+	
+	private static final String PROPERTY_JAR_FILES = "jarFiles";
 	private static final String SCOPE_RUNTIME = "runtime";
 
 	private static final FilenameFilter JAR_FILENAME_FILTER = new FilenameFilter()
@@ -60,15 +65,17 @@ public class ShoebillDependencyManager
 	};
 	
 	
-	public static void main(String[] args) throws Exception
+	@SuppressWarnings("unchecked")
+	public static void main(String[] args) throws Throwable
 	{
-		List<File> files = resolveDependencies();
+		Map<String, Object> properties = resolveDependencies();
+		List<File> files = List.class.cast(properties.get(PROPERTY_JAR_FILES));
 		for (File file : files) System.out.println(file);
 	}
 	
-	public static List<File> resolveDependencies() throws Exception
+	public static Map<String, Object> resolveDependencies() throws Throwable
 	{
-		ShoebillConfig shoebillConfig = new ShoebillConfig(new FileInputStream(new File("shoebill/shoebill.yml")));
+		ShoebillConfig shoebillConfig = new ShoebillConfig(new FileInputStream(SHOEBILL_CONFIG_PATH));
 		ResourceConfig config = new ResourceConfig(new FileInputStream(new File(shoebillConfig.getShoebillDir(), "resources.yml")));
 		
 		final File repoDir = shoebillConfig.getRepositoryDir();
@@ -146,6 +153,8 @@ public class ShoebillDependencyManager
 			System.out.println("Skip resolve dependencies." );
 		}
 
-		return files;
+		Map<String, Object> properties = new HashMap<>();
+		properties.put(PROPERTY_JAR_FILES, files);
+		return properties;
 	}
 }
