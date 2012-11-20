@@ -54,7 +54,7 @@ public class ShoebillDependencyFilter implements DependencyFilter
 			Artifact artifact = dependency.getArtifact();
 			
 			final String sp = ShoebillArtifactLocator.COORD_TOKEN_FLAT_SEPARATOR;
-			String filename = artifact.getGroupId() + sp + artifact.getArtifactId() + sp + artifact.getBaseVersion() + "." + artifact.getExtension();
+			String filename = artifact.getGroupId() + sp + artifact.getArtifactId() + "-" + artifact.getBaseVersion() + "." + artifact.getExtension();
 			
 			if (	new File(librariesDir, filename).isFile() ||
 					new File(pluginsDir, filename).isFile() ||
