@@ -93,6 +93,7 @@ public class ShoebillDependencyManager
 			CollectRequest collectRequest = new CollectRequest();
 			
 			session.setRepositoryListener(new ShoebillRepositoryListener());
+			session.setUpdatePolicy(config.getCacheUpdatePolicy());
 
 			for (RepositoryEntry repo : config.getRepositories())
 			{
