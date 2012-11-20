@@ -138,6 +138,15 @@
 			<resource>
 				<targetPath>.</targetPath>
 				<directory>${basedir}/src/main/resources</directory>
+				<filtering>false</filtering>
+				<includes>
+					<include>dependencyManagerImpl.txt</include>
+				</includes>
+			</resource>
+			
+			<resource>
+				<targetPath>.</targetPath>
+				<directory>${basedir}/src/main/resources</directory>
 				<filtering>true</filtering>
 				<includes>
 					<include>version.yml</include>
