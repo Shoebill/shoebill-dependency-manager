@@ -19,6 +19,8 @@ package net.gtaun.shoebill.dependency;
 import java.io.File;
 import java.util.List;
 
+import net.gtaun.shoebill.ShoebillArtifactLocator;
+
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.graph.Dependency;
 import org.sonatype.aether.graph.DependencyFilter;
@@ -31,9 +33,6 @@ import org.sonatype.aether.graph.DependencyNode;
  */
 public class ShoebillDependencyFilter implements DependencyFilter
 {
-	private static final String SEPARATOR = "#";
-	
-	
 	private File librariesDir;
 	private File pluginsDir;
 	private File gamemodesDir;
@@ -53,7 +52,9 @@ public class ShoebillDependencyFilter implements DependencyFilter
 		if(dependency != null)
 		{
 			Artifact artifact = dependency.getArtifact();
-			String filename = artifact.getGroupId() + SEPARATOR + artifact.getArtifactId() + SEPARATOR + artifact.getBaseVersion() + "." + artifact.getExtension();
+			
+			final String sp = ShoebillArtifactLocator.COORD_TOKEN_FLAT_SEPARATOR;
+			String filename = artifact.getGroupId() + sp + artifact.getArtifactId() + sp + artifact.getBaseVersion() + "." + artifact.getExtension();
 			
 			if (	new File(librariesDir, filename).isFile() ||
 					new File(pluginsDir, filename).isFile() ||
