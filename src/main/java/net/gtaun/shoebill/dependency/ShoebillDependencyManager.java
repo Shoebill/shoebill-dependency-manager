@@ -26,6 +26,7 @@ import java.util.List;
 
 import net.gtaun.shoebill.ResourceConfig;
 import net.gtaun.shoebill.ResourceConfig.RepositoryEntry;
+import net.gtaun.shoebill.ShoebillConfig;
 
 import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.artifact.Artifact;
@@ -48,10 +49,6 @@ import org.sonatype.aether.util.graph.PreorderNodeListGenerator;
 public class ShoebillDependencyManager
 {
 	private static final String SHOEBILL_PATH = "shoebill/";
-	private static final String REPOSITORY_DIR = "repository/";
-	private static final String LIBRARIES_DIR = "libraries/";
-	private static final String PLUGINS_DIR = "plugins/";
-	private static final String GAMEMODES_DIR = "gamemodes/";
 	
 	private static final String SCOPE_RUNTIME = "runtime";
 
@@ -73,14 +70,16 @@ public class ShoebillDependencyManager
 	
 	public static List<File> resolveDependencies() throws Exception
 	{
-		ResourceConfig config = new ResourceConfig(new FileInputStream(new File(SHOEBILL_PATH + "resources.yml")));
-		
 		final File shoebillDir = new File(SHOEBILL_PATH);
-		final File repoDir = new File(shoebillDir, REPOSITORY_DIR);
-		final File libDir = new File(shoebillDir, LIBRARIES_DIR);
-		final File pluginsDir = new File(shoebillDir, PLUGINS_DIR);
-		final File gamemodesDir = new File(shoebillDir, GAMEMODES_DIR);
-
+		
+		ShoebillConfig shoebillConfig = new ShoebillConfig(new FileInputStream(new File(shoebillDir, "shoebill.yml")));
+		ResourceConfig config = new ResourceConfig(new FileInputStream(new File(shoebillDir, "resources.yml")));
+		
+		final File repoDir = shoebillConfig.getRepositoryDir();
+		final File libDir = shoebillConfig.getLibrariesDir();
+		final File pluginsDir = shoebillConfig.getPluginsDir();
+		final File gamemodesDir = shoebillConfig.getGamemodesDir();
+		
 		File[] libJarFiles = libDir.listFiles(JAR_FILENAME_FILTER);
 		File[] pluginsJarFiles = pluginsDir.listFiles(JAR_FILENAME_FILTER);
 		File[] gamemodesJarFiles = gamemodesDir.listFiles(JAR_FILENAME_FILTER);
@@ -91,57 +90,65 @@ public class ShoebillDependencyManager
 		if(pluginsJarFiles != null) files.addAll(Arrays.asList(pluginsJarFiles));
 		if(gamemodesJarFiles != null) files.addAll(Arrays.asList(gamemodesJarFiles));
 		
-		RepositorySystem repoSystem = Util.newRepositorySystem();
-		DefaultRepositorySystemSession session = Util.newRepositorySystemSession(repoSystem, repoDir);
-		CollectRequest collectRequest = new CollectRequest();
-		
-		session.setRepositoryListener(new ShoebillRepositoryListener());
+		if (shoebillConfig.isResolveDependencies())
+		{
+			RepositorySystem repoSystem = Util.newRepositorySystem();
+			DefaultRepositorySystemSession session = Util.newRepositorySystemSession(repoSystem, repoDir);
+			CollectRequest collectRequest = new CollectRequest();
+			
+			session.setRepositoryListener(new ShoebillRepositoryListener());
 
-		for (RepositoryEntry repo : config.getRepositories())
-		{
-			collectRequest.addRepository(new RemoteRepository(repo.getId(), repo.getType(), repo.getUrl()));
+			for (RepositoryEntry repo : config.getRepositories())
+			{
+				collectRequest.addRepository(new RemoteRepository(repo.getId(), repo.getType(), repo.getUrl()));
+			}
+			
+			// Runtime
+			Artifact runtimeArtifact = new DefaultArtifact(config.getRuntime());
+			collectRequest.addDependency(new Dependency(runtimeArtifact, SCOPE_RUNTIME));
+			
+			// Plugins
+			for (String coords : config.getPlugins())
+			{
+				Artifact artifact = new DefaultArtifact(coords);
+				collectRequest.addDependency(new Dependency(artifact, SCOPE_RUNTIME));
+			}
+			
+			// Gamemode
+			Artifact gamemodeArtifact = new DefaultArtifact(config.getGamemode());
+			collectRequest.addDependency(new Dependency(gamemodeArtifact, SCOPE_RUNTIME));
+			
+			DependencyNode node = null;
+			try
+			{
+				node = repoSystem.collectDependencies(session, collectRequest).getRoot();
+			}
+			catch (DependencyCollectionException e)
+			{
+				e.printStackTrace();
+			}
+			DependencyRequest dependencyRequest = new DependencyRequest(node, null);
+			dependencyRequest.setFilter(new ShoebillDependencyFilter(libDir, pluginsDir, gamemodesDir));
+			
+			try
+			{
+				repoSystem.resolveDependencies(session, dependencyRequest);
+			}
+			catch (DependencyResolutionException e)
+			{
+				e.printStackTrace();
+			}
+			
+			PreorderNodeListGenerator nlg = new PreorderNodeListGenerator();
+			node.accept(nlg);
+			
+			files.addAll(nlg.getFiles());
 		}
-		
-		// Runtime
-		Artifact runtimeArtifact = new DefaultArtifact(config.getRuntime());
-		collectRequest.addDependency(new Dependency(runtimeArtifact, SCOPE_RUNTIME));
-		
-		// Plugins
-		for (String coords : config.getPlugins())
+		else
 		{
-			Artifact artifact = new DefaultArtifact(coords);
-			collectRequest.addDependency(new Dependency(artifact, SCOPE_RUNTIME));
+			System.out.println("Skip resolve dependencies." );
 		}
-		
-		// Gamemode
-		Artifact gamemodeArtifact = new DefaultArtifact(config.getGamemode());
-		collectRequest.addDependency(new Dependency(gamemodeArtifact, SCOPE_RUNTIME));
-		
-		DependencyNode node = null;
-		try
-		{
-			node = repoSystem.collectDependencies(session, collectRequest).getRoot();
-		}
-		catch (DependencyCollectionException e)
-		{
-			e.printStackTrace();
-		}
-		DependencyRequest dependencyRequest = new DependencyRequest(node, null);
-		dependencyRequest.setFilter(new ShoebillDependencyFilter(libDir, pluginsDir, gamemodesDir));
-		
-		try
-		{
-			repoSystem.resolveDependencies(session, dependencyRequest);
-		}
-		catch (DependencyResolutionException e)
-		{
-			e.printStackTrace();
-		}
-		
-		PreorderNodeListGenerator nlg = new PreorderNodeListGenerator();
-		node.accept(nlg);
-		
-		files.addAll(nlg.getFiles());
+
 		return files;
 	}
 }
