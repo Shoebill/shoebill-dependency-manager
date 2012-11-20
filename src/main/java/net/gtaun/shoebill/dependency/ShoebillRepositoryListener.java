@@ -53,19 +53,20 @@ public class ShoebillRepositoryListener extends AbstractRepositoryListener
 	
 	public void artifactResolved(RepositoryEvent event)
 	{
-		if(event.getArtifact().getExtension() == "pom") return;
+		if (event.getArtifact().getExtension() == "pom") return;
 		out.println("Resolved artifact " + event.getArtifact() + " from " + event.getRepository().getId());
 	}
 	
 	public void artifactDownloading(RepositoryEvent event)
 	{
-		if(event.getArtifact().getExtension() == "pom") return;
+		if (event.getArtifact().getExtension() == "pom") return;
 		out.println("Downloading artifact " + event.getArtifact() + " from " + event.getRepository().getId());
 	}
 	
 	public void artifactDownloaded(RepositoryEvent event)
 	{
-		if(event.getArtifact().getExtension() == "pom") return;
+		if (event.getArtifact().getExtension() == "pom") return;
+		if (event.getException() != null) return;
 		out.println("Downloaded artifact " + event.getArtifact() + " from " + event.getRepository().getId());
 	}
 	
