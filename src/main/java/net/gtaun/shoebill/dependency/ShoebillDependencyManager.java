@@ -28,6 +28,7 @@ import java.util.Map;
 
 import net.gtaun.shoebill.ResourceConfig;
 import net.gtaun.shoebill.ResourceConfig.RepositoryEntry;
+import net.gtaun.shoebill.ShoebillArtifactLocator;
 import net.gtaun.shoebill.ShoebillConfig;
 
 import org.sonatype.aether.RepositorySystem;
@@ -76,7 +77,8 @@ public class ShoebillDependencyManager
 	public static Map<String, Object> resolveDependencies() throws Throwable
 	{
 		ShoebillConfig shoebillConfig = new ShoebillConfig(new FileInputStream(SHOEBILL_CONFIG_PATH));
-		ResourceConfig config = new ResourceConfig(new FileInputStream(new File(shoebillConfig.getShoebillDir(), "resources.yml")));
+		ResourceConfig resourceConfig = new ResourceConfig(new FileInputStream(new File(shoebillConfig.getShoebillDir(), "resources.yml")));
+		ShoebillArtifactLocator artifactLocator = new ShoebillArtifactLocator(shoebillConfig, resourceConfig);
 		
 		final File repoDir = shoebillConfig.getRepositoryDir();
 		final File libDir = shoebillConfig.getLibrariesDir();
@@ -100,26 +102,26 @@ public class ShoebillDependencyManager
 			CollectRequest collectRequest = new CollectRequest();
 			
 			session.setRepositoryListener(new ShoebillRepositoryListener());
-			session.setUpdatePolicy(config.getCacheUpdatePolicy());
+			session.setUpdatePolicy(resourceConfig.getCacheUpdatePolicy());
 
-			for (RepositoryEntry repo : config.getRepositories())
+			for (RepositoryEntry repo : resourceConfig.getRepositories())
 			{
 				collectRequest.addRepository(new RemoteRepository(repo.getId(), repo.getType(), repo.getUrl()));
 			}
 			
 			// Runtime
-			Artifact runtimeArtifact = new DefaultArtifact(config.getRuntime());
+			Artifact runtimeArtifact = new DefaultArtifact(resourceConfig.getRuntime());
 			collectRequest.addDependency(new Dependency(runtimeArtifact, SCOPE_RUNTIME));
 			
 			// Plugins
-			for (String coords : config.getPlugins())
+			for (String coords : resourceConfig.getPlugins())
 			{
 				Artifact artifact = new DefaultArtifact(coords);
 				collectRequest.addDependency(new Dependency(artifact, SCOPE_RUNTIME));
 			}
 			
 			// Gamemode
-			Artifact gamemodeArtifact = new DefaultArtifact(config.getGamemode());
+			Artifact gamemodeArtifact = new DefaultArtifact(resourceConfig.getGamemode());
 			collectRequest.addDependency(new Dependency(gamemodeArtifact, SCOPE_RUNTIME));
 			
 			DependencyNode node = null;
@@ -132,7 +134,7 @@ public class ShoebillDependencyManager
 				e.printStackTrace();
 			}
 			DependencyRequest dependencyRequest = new DependencyRequest(node, null);
-			dependencyRequest.setFilter(new ShoebillDependencyFilter(libDir, pluginsDir, gamemodesDir));
+			dependencyRequest.setFilter(new ShoebillDependencyFilter(artifactLocator));
 			
 			try
 			{

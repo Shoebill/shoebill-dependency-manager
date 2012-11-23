@@ -33,16 +33,12 @@ import org.sonatype.aether.graph.DependencyNode;
  */
 public class ShoebillDependencyFilter implements DependencyFilter
 {
-	private File librariesDir;
-	private File pluginsDir;
-	private File gamemodesDir;
+	private ShoebillArtifactLocator artifactLocator;
 	
 	
-	public ShoebillDependencyFilter(File librariesDir, File pluginsDir, File gamemodesDir)
+	public ShoebillDependencyFilter(ShoebillArtifactLocator locator)
 	{
-		this.librariesDir = librariesDir;
-		this.pluginsDir = pluginsDir;
-		this.gamemodesDir = gamemodesDir;
+		this.artifactLocator = locator;
 	}
 	
 	@Override
@@ -52,15 +48,12 @@ public class ShoebillDependencyFilter implements DependencyFilter
 		if(dependency != null)
 		{
 			Artifact artifact = dependency.getArtifact();
+			String coord = artifact.getGroupId() + ":" + artifact.getArtifactId() + ":" + artifact.getBaseVersion();
 			
-			final String sp = ShoebillArtifactLocator.COORD_TOKEN_FLAT_SEPARATOR;
-			String filename = artifact.getGroupId() + sp + artifact.getArtifactId() + "-" + artifact.getBaseVersion() + "." + artifact.getExtension();
-			
-			if (	new File(librariesDir, filename).isFile() ||
-					new File(pluginsDir, filename).isFile() ||
-					new File(gamemodesDir, filename).isFile() 		)
+			File file = artifactLocator.getOverrideFile(coord);
+			if (file != null)
 			{
-				System.out.println("Ignored artifact " + artifact);
+				System.out.println("Ignored artifact " + artifact + " (Override: " + file + ")");
 				return false;
 			}
 		}
