@@ -97,8 +97,8 @@ public class ShoebillDependencyManager
 		
 		if (shoebillConfig.isResolveDependencies())
 		{
-			RepositorySystem repoSystem = Util.newRepositorySystem();
-			DefaultRepositorySystemSession session = Util.newRepositorySystemSession(repoSystem, repoDir);
+			RepositorySystem repoSystem = AetherUtil.newRepositorySystem();
+			DefaultRepositorySystemSession session = AetherUtil.newRepositorySystemSession(repoSystem, repoDir);
 			CollectRequest collectRequest = new CollectRequest();
 			
 			session.setRepositoryListener(new ShoebillRepositoryListener());
@@ -110,19 +110,40 @@ public class ShoebillDependencyManager
 			}
 			
 			// Runtime
-			Artifact runtimeArtifact = new DefaultArtifact(resourceConfig.getRuntime());
-			collectRequest.addDependency(new Dependency(runtimeArtifact, SCOPE_RUNTIME));
+			String runtimeCoord = resourceConfig.getRuntime();
+			if (runtimeCoord.contains(":"))
+			{
+				Artifact runtimeArtifact = new DefaultArtifact(resourceConfig.getRuntime());
+				collectRequest.addDependency(new Dependency(runtimeArtifact, SCOPE_RUNTIME));
+			}
+			else
+			{
+				System.out.println("Skipped artifact " + runtimeCoord + " (Runtime)");
+			}
 			
 			// Plugins
-			for (String coords : resourceConfig.getPlugins())
+			for (String coord : resourceConfig.getPlugins())
 			{
-				Artifact artifact = new DefaultArtifact(coords);
+				if (coord.contains(":") == false)
+				{
+					System.out.println("Skipped artifact " + runtimeCoord + " (Plugin)");
+					continue;
+				}
+				Artifact artifact = new DefaultArtifact(coord);
 				collectRequest.addDependency(new Dependency(artifact, SCOPE_RUNTIME));
 			}
 			
 			// Gamemode
-			Artifact gamemodeArtifact = new DefaultArtifact(resourceConfig.getGamemode());
-			collectRequest.addDependency(new Dependency(gamemodeArtifact, SCOPE_RUNTIME));
+			String gamemodeCoord = resourceConfig.getGamemode();
+			if (gamemodeCoord.contains(":"))
+			{
+				Artifact gamemodeArtifact = new DefaultArtifact(resourceConfig.getGamemode());
+				collectRequest.addDependency(new Dependency(gamemodeArtifact, SCOPE_RUNTIME));
+			}
+			else
+			{
+				System.out.println("Skipped artifact " + runtimeCoord + " (Gamemode)");
+			}
 			
 			DependencyNode node = null;
 			try
