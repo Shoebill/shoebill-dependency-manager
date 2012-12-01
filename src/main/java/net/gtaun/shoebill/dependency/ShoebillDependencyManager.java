@@ -126,7 +126,7 @@ public class ShoebillDependencyManager
 			{
 				if (coord.contains(":") == false)
 				{
-					System.out.println("Skipped artifact " + runtimeCoord + " (Plugin)");
+					System.out.println("Skipped artifact " + coord + " (Plugin)");
 					continue;
 				}
 				Artifact artifact = new DefaultArtifact(coord);
@@ -142,7 +142,7 @@ public class ShoebillDependencyManager
 			}
 			else
 			{
-				System.out.println("Skipped artifact " + runtimeCoord + " (Gamemode)");
+				System.out.println("Skipped artifact " + gamemodeCoord + " (Gamemode)");
 			}
 			
 			DependencyNode node = null;
