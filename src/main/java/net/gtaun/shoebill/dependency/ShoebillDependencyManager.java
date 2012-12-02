@@ -51,6 +51,7 @@ import org.sonatype.aether.util.graph.PreorderNodeListGenerator;
  */
 public class ShoebillDependencyManager
 {
+	private static final String VERSION_FILENAME = "/version.yml";
 	private static final String SHOEBILL_CONFIG_PATH = "./shoebill/shoebill.yml";
 	
 	private static final String PROPERTY_JAR_FILES = "jarFiles";
@@ -64,6 +65,18 @@ public class ShoebillDependencyManager
 			return name.endsWith(".jar");
 		}
 	};
+	
+	static
+	{
+		DependencyManagerVersion version = new DependencyManagerVersion(ShoebillDependencyManager.class.getResourceAsStream(VERSION_FILENAME));
+		
+		String startupMessage = version.getName();
+		if (version.getBuildNumber() != 0) startupMessage += " Build " + version.getBuildNumber();
+		startupMessage += " (for " + version.getSupport() + ")";
+		
+		System.out.println(startupMessage);
+		System.out.println("Build date: " + version.getBuildDate());
+	}
 	
 	
 	@SuppressWarnings("unchecked")
@@ -97,6 +110,8 @@ public class ShoebillDependencyManager
 		
 		if (shoebillConfig.isResolveDependencies())
 		{
+			System.out.println("Resolving dependencies...");
+			
 			RepositorySystem repoSystem = AetherUtil.newRepositorySystem();
 			DefaultRepositorySystemSession session = AetherUtil.newRepositorySystemSession(repoSystem, repoDir);
 			CollectRequest collectRequest = new CollectRequest();

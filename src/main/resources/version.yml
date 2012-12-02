@@ -1,5 +1,5 @@
-name: Shoebill Runtime
+name: Shoebill Dependency Manager
 version: ${version}
-support: SA-MP 0.3D R2
+support: net.gtaun:shoebill-api:0.2.0-SNAPSHOT
 buildNumber: ${build.number}
 buildDate: ${build.timestamp}
