@@ -37,6 +37,7 @@ import org.sonatype.aether.collection.CollectRequest;
 import org.sonatype.aether.collection.DependencyCollectionException;
 import org.sonatype.aether.graph.Dependency;
 import org.sonatype.aether.graph.DependencyNode;
+import org.sonatype.aether.repository.Authentication;
 import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.resolution.DependencyRequest;
 import org.sonatype.aether.resolution.DependencyResolutionException;
@@ -70,7 +71,7 @@ public class ShoebillDependencyManager
 	{
 		DependencyManagerVersion version = new DependencyManagerVersion(ShoebillDependencyManager.class.getResourceAsStream(VERSION_FILENAME));
 		
-		String startupMessage = version.getName();
+		String startupMessage = version.getName() + " " + version.getVersion();
 		if (version.getBuildNumber() != 0) startupMessage += " Build " + version.getBuildNumber();
 		startupMessage += " (for " + version.getSupport() + ")";
 		
@@ -121,7 +122,13 @@ public class ShoebillDependencyManager
 
 			for (RepositoryEntry repo : resourceConfig.getRepositories())
 			{
-				collectRequest.addRepository(new RemoteRepository(repo.getId(), repo.getType(), repo.getUrl()));
+				RemoteRepository repository = new RemoteRepository(repo.getId(), repo.getType(), repo.getUrl());
+				
+				String username = repo.getUsername();
+				String password = repo.getPassword();
+				if (username != null && password != null) repository.setAuthentication(new Authentication(username, password));
+				
+				collectRequest.addRepository(repository);
 			}
 			
 			// Runtime
