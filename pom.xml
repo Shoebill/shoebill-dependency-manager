@@ -1,13 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
 		<artifactId>oss-parent</artifactId>
 		<version>7</version>
 	</parent>
-	
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<build.number>0</build.number>
@@ -15,7 +15,7 @@
 		<mavenVersion>3.0.4</mavenVersion>
 		<wagonVersion>2.2</wagonVersion>
 	</properties>
-	
+
 	<groupId>net.gtaun</groupId>
 	<artifactId>shoebill-dependency-manager</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
@@ -31,13 +31,13 @@
 			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
 		</license>
 	</licenses>
-	
+
 	<scm>
 		<url>https://github.com/Shoebill/shoebill-dependency-manager</url>
 		<connection>https://github.com/Shoebill/shoebill-dependency-manager.git</connection>
 		<developerConnection>scm:git:git@github.com:Shoebill/shoebill-dependency-manager.git</developerConnection>
 	</scm>
-	
+
 	<developers>
 		<developer>
 			<name>JoJLlmAn</name>
@@ -48,7 +48,7 @@
 			<organizationUrl>https://github.com/Shoebill</organizationUrl>
 			<timezone>+8</timezone>
 		</developer>
-		
+
 		<developer>
 			<name>MK124</name>
 			<id>MK124</id>
@@ -59,7 +59,7 @@
 			<timezone>+8</timezone>
 		</developer>
 	</developers>
-	
+
 	<ciManagement>
 		<system>jenkins</system>
 		<url>http://ci.gtaun.net</url>
@@ -69,7 +69,7 @@
 		<system>GitHub</system>
 		<url>https://github.com/Shoebill/shoebill-dependency-manager/issues</url>
 	</issueManagement>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.sonatype.aether</groupId>
@@ -106,25 +106,25 @@
 			<artifactId>wagon-provider-api</artifactId>
 			<version>${wagonVersion}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.maven.wagon</groupId>
 			<artifactId>wagon-http</artifactId>
 			<version>${wagonVersion}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.maven.wagon</groupId>
 			<artifactId>wagon-ftp</artifactId>
 			<version>${wagonVersion}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.maven.wagon</groupId>
 			<artifactId>wagon-file</artifactId>
 			<version>${wagonVersion}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>net.gtaun</groupId>
 			<artifactId>shoebill-utilities</artifactId>
@@ -144,7 +144,7 @@
 					<include>dependencyManagerImpl.txt</include>
 				</includes>
 			</resource>
-			
+
 			<resource>
 				<targetPath>.</targetPath>
 				<directory>${basedir}/src/main/resources</directory>
@@ -222,21 +222,29 @@
 							<pluginExecutions>
 								<pluginExecution>
 									<pluginExecutionFilter>
-										<groupId>
-											com.keyboardsamurais.maven
-										</groupId>
-										<artifactId>
-											maven-timestamp-plugin
-										</artifactId>
-										<versionRange>
-											[1.0,)
-										</versionRange>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-enforcer-plugin</artifactId>
+										<versionRange>[1.0.0,)</versionRange>
+										<goals>
+											<goal>enforce</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+								
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>com.keyboardsamurais.maven</groupId>
+										<artifactId>maven-timestamp-plugin</artifactId>
+										<versionRange>[1.0,)</versionRange>
 										<goals>
 											<goal>create</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore></ignore>
+										<ignore />
 									</action>
 								</pluginExecution>
 							</pluginExecutions>
