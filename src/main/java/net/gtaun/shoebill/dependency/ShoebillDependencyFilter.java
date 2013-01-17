@@ -50,6 +50,8 @@ public class ShoebillDependencyFilter implements DependencyFilter
 			Artifact artifact = dependency.getArtifact();
 			String coord = artifact.getGroupId() + ":" + artifact.getArtifactId() + ":" + artifact.getBaseVersion();
 			
+			if (artifact.getArtifactId().endsWith("shoebill-launcher")) return false;
+			
 			File file = artifactLocator.getOverrideFile(coord);
 			if (file != null)
 			{
