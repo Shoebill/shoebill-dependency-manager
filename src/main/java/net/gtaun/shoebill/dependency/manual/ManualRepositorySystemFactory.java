@@ -21,15 +21,15 @@ import org.apache.maven.repository.internal.DefaultVersionRangeResolver;
 import org.apache.maven.repository.internal.DefaultVersionResolver;
 import org.apache.maven.repository.internal.SnapshotMetadataGeneratorFactory;
 import org.apache.maven.repository.internal.VersionsMetadataGeneratorFactory;
-import org.sonatype.aether.RepositorySystem;
-import org.sonatype.aether.connector.wagon.WagonProvider;
-import org.sonatype.aether.connector.wagon.WagonRepositoryConnectorFactory;
-import org.sonatype.aether.impl.ArtifactDescriptorReader;
-import org.sonatype.aether.impl.MetadataGeneratorFactory;
-import org.sonatype.aether.impl.VersionRangeResolver;
-import org.sonatype.aether.impl.VersionResolver;
-import org.sonatype.aether.impl.internal.DefaultServiceLocator;
-import org.sonatype.aether.spi.connector.RepositoryConnectorFactory;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.connector.wagon.WagonProvider;
+import org.eclipse.aether.connector.wagon.WagonRepositoryConnectorFactory;
+import org.eclipse.aether.impl.ArtifactDescriptorReader;
+import org.eclipse.aether.impl.DefaultServiceLocator;
+import org.eclipse.aether.impl.MetadataGeneratorFactory;
+import org.eclipse.aether.impl.VersionRangeResolver;
+import org.eclipse.aether.impl.VersionResolver;
+import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
 
 /**
  * 

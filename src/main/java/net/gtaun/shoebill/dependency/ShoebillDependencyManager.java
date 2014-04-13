@@ -31,19 +31,20 @@ import net.gtaun.shoebill.ResourceConfig.RepositoryEntry;
 import net.gtaun.shoebill.ShoebillArtifactLocator;
 import net.gtaun.shoebill.ShoebillConfig;
 
-import org.sonatype.aether.RepositorySystem;
-import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.collection.CollectRequest;
-import org.sonatype.aether.collection.DependencyCollectionException;
-import org.sonatype.aether.graph.Dependency;
-import org.sonatype.aether.graph.DependencyNode;
-import org.sonatype.aether.repository.Authentication;
-import org.sonatype.aether.repository.RemoteRepository;
-import org.sonatype.aether.resolution.DependencyRequest;
-import org.sonatype.aether.resolution.DependencyResolutionException;
-import org.sonatype.aether.util.DefaultRepositorySystemSession;
-import org.sonatype.aether.util.artifact.DefaultArtifact;
-import org.sonatype.aether.util.graph.PreorderNodeListGenerator;
+import org.eclipse.aether.DefaultRepositorySystemSession;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.collection.CollectRequest;
+import org.eclipse.aether.collection.DependencyCollectionException;
+import org.eclipse.aether.graph.Dependency;
+import org.eclipse.aether.graph.DependencyNode;
+import org.eclipse.aether.repository.Authentication;
+import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.resolution.DependencyRequest;
+import org.eclipse.aether.resolution.DependencyResolutionException;
+import org.eclipse.aether.util.graph.visitor.PreorderNodeListGenerator;
+import org.eclipse.aether.util.repository.AuthenticationBuilder;
 
 /**
  * 
@@ -122,11 +123,18 @@ public class ShoebillDependencyManager
 
 			for (RepositoryEntry repo : resourceConfig.getRepositories())
 			{
-				RemoteRepository repository = new RemoteRepository(repo.getId(), repo.getType(), repo.getUrl());
-				
+				Authentication auth = null;
+
 				String username = repo.getUsername();
 				String password = repo.getPassword();
-				if (username != null && password != null) repository.setAuthentication(new Authentication(username, password));
+				if (username != null && password != null)
+				{
+					auth = new AuthenticationBuilder().addUsername(username).addPassword(password).build();
+				}
+				
+				RemoteRepository repository = new RemoteRepository.Builder(repo.getId(), repo.getType(), repo.getUrl())
+					.setAuthentication(auth)
+					.build();
 				
 				collectRequest.addRepository(repository);
 			}

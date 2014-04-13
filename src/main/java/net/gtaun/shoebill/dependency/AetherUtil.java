@@ -20,10 +20,10 @@ import java.io.File;
 
 import net.gtaun.shoebill.dependency.manual.ManualRepositorySystemFactory;
 
-import org.apache.maven.repository.internal.MavenRepositorySystemSession;
-import org.sonatype.aether.RepositorySystem;
-import org.sonatype.aether.repository.LocalRepository;
-import org.sonatype.aether.util.DefaultRepositorySystemSession;
+import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
+import org.eclipse.aether.DefaultRepositorySystemSession;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.repository.LocalRepository;
 
 /**
  * 
@@ -32,18 +32,18 @@ import org.sonatype.aether.util.DefaultRepositorySystemSession;
  */
 public class AetherUtil
 {
-    public static RepositorySystem newRepositorySystem()
-    {
-        return ManualRepositorySystemFactory.newRepositorySystem();
-    }
-
-    public static DefaultRepositorySystemSession newRepositorySystemSession( RepositorySystem system, File repoDir )
-    {
-        MavenRepositorySystemSession session = new MavenRepositorySystemSession();
+	public static RepositorySystem newRepositorySystem()
+	{
+		return ManualRepositorySystemFactory.newRepositorySystem();
+	}
+	
+	public static DefaultRepositorySystemSession newRepositorySystemSession(RepositorySystem system, File repoDir)
+	{
+		DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
         
-        LocalRepository localRepo = new LocalRepository( repoDir );
-        session.setLocalRepositoryManager( system.newLocalRepositoryManager( localRepo ) );
-
-        return session;
-    }
+		LocalRepository localRepo = new LocalRepository(repoDir);
+		session.setLocalRepositoryManager(system.newLocalRepositoryManager(session, localRepo));
+		
+		return session;
+	}
 }

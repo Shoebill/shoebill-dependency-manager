@@ -18,8 +18,8 @@ package net.gtaun.shoebill.dependency;
 
 import java.io.PrintStream;
 
-import org.sonatype.aether.AbstractRepositoryListener;
-import org.sonatype.aether.RepositoryEvent;
+import org.eclipse.aether.AbstractRepositoryListener;
+import org.eclipse.aether.RepositoryEvent;
 
 /**
  * 
