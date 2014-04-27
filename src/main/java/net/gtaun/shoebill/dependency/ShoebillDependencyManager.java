@@ -19,18 +19,24 @@ package net.gtaun.shoebill.dependency;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
 
 import net.gtaun.shoebill.ResourceConfig;
 import net.gtaun.shoebill.ResourceConfig.RepositoryEntry;
 import net.gtaun.shoebill.ShoebillArtifactLocator;
 import net.gtaun.shoebill.ShoebillConfig;
 
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.artifact.Artifact;
@@ -139,6 +145,29 @@ public class ShoebillDependencyManager
 				collectRequest.addRepository(repository);
 			}
 			
+			BiConsumer<String, Artifact> checkOverrideDependencies = (coord, artifact) ->
+			{
+				File file = artifactLocator.getOverrideFile(coord);
+				if (file == null) return;
+				
+				try (JarFile jarFile = new JarFile(file))
+				{
+					ZipEntry entry = jarFile.getEntry("META-INF/maven/" + artifact.getGroupId() + "/" + artifact.getArtifactId() + "/pom.xml");
+					if (entry == null) throw new FileNotFoundException();
+					
+					Model model = new MavenXpp3Reader().read(jarFile.getInputStream(entry));
+					model.getDependencies().forEach((d) ->
+					{
+						Artifact a = new DefaultArtifact(d.getGroupId(), d.getArtifactId(), "jar", d.getVersion());
+						collectRequest.addDependency(new Dependency(a, SCOPE_RUNTIME));
+					});
+				}
+				catch (Exception e)
+				{
+					System.out.println("Missing artifact descriptor for overridden jar: " + file.getPath());
+				}
+			};
+			
 			// Runtimes
 			for (String coord : resourceConfig.getRuntimes())
 			{
@@ -150,6 +179,7 @@ public class ShoebillDependencyManager
 				
 				Artifact artifact = new DefaultArtifact(coord);
 				collectRequest.addDependency(new Dependency(artifact, SCOPE_RUNTIME));
+				checkOverrideDependencies.accept(coord, artifact);
 			}
 			
 			// Plugins
@@ -163,6 +193,7 @@ public class ShoebillDependencyManager
 				
 				Artifact artifact = new DefaultArtifact(coord);
 				collectRequest.addDependency(new Dependency(artifact, SCOPE_RUNTIME));
+				checkOverrideDependencies.accept(coord, artifact);
 			}
 			
 			// Gamemode
@@ -171,6 +202,7 @@ public class ShoebillDependencyManager
 			{
 				Artifact gamemodeArtifact = new DefaultArtifact(resourceConfig.getGamemode());
 				collectRequest.addDependency(new Dependency(gamemodeArtifact, SCOPE_RUNTIME));
+				checkOverrideDependencies.accept(gamemodeCoord, gamemodeArtifact);
 			}
 			else
 			{
@@ -186,6 +218,7 @@ public class ShoebillDependencyManager
 			{
 				e.printStackTrace();
 			}
+			
 			DependencyRequest dependencyRequest = new DependencyRequest(node, null);
 			dependencyRequest.setFilter(new ShoebillDependencyFilter(artifactLocator));
 			

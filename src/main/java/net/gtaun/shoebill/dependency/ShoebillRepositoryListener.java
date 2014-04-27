@@ -16,8 +16,6 @@
 
 package net.gtaun.shoebill.dependency;
 
-import java.io.PrintStream;
-
 import org.eclipse.aether.AbstractRepositoryListener;
 import org.eclipse.aether.RepositoryEvent;
 
@@ -28,50 +26,42 @@ import org.eclipse.aether.RepositoryEvent;
  */
 public class ShoebillRepositoryListener extends AbstractRepositoryListener
 {
-	private PrintStream out;
-	
-	
 	public ShoebillRepositoryListener()
 	{
-		this(null);
-	}
-	
-	public ShoebillRepositoryListener(PrintStream out)
-	{
-		this.out = (out != null) ? out : System.out;
+		
 	}
 	
 	public void artifactDescriptorInvalid(RepositoryEvent event)
 	{
-		out.println("Invalid artifact descriptor for " + event.getArtifact() + ": " + event.getException().getMessage());
+		System.out.println("Invalid artifact descriptor for " + event.getArtifact() + ": " + event.getException().getMessage());
 	}
 	
 	public void artifactDescriptorMissing(RepositoryEvent event)
 	{
-		out.println("Missing artifact descriptor for " + event.getArtifact());
+		System.out.println("Missing artifact descriptor for " + event.getArtifact());
 	}
 	
 	public void artifactResolved(RepositoryEvent event)
 	{
 		if (event.getArtifact().getExtension().equals("pom")) return;
-		out.println("Resolved artifact " + event.getArtifact() + " from " + event.getRepository().getId());
+		System.out.println("Resolved artifact " + event.getArtifact() + " from " + event.getRepository().getId());
 	}
 	
 	public void artifactDownloading(RepositoryEvent event)
 	{
 		if (event.getArtifact().getExtension().equals("pom")) return;
-		out.println("Downloading artifact " + event.getArtifact() + " from " + event.getRepository().getId());
+		System.out.println("Downloading artifact " + event.getArtifact() + " from " + event.getRepository().getId());
 	}
 	
 	public void artifactDownloaded(RepositoryEvent event)
 	{
 		if (event.getArtifact().getExtension().equals("pom")) return;
 		if (event.getException() != null) return;
-		out.println("Downloaded artifact " + event.getArtifact() + " from " + event.getRepository().getId());
+		System.out.println("Downloaded artifact " + event.getArtifact() + " from " + event.getRepository().getId());
 	}
 	
 	public void metadataInvalid(RepositoryEvent event)
 	{
-		out.println("Invalid metadata " + event.getMetadata());
+		System.out.println("Invalid metadata " + event.getMetadata());
 	}
 }
