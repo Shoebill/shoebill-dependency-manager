@@ -139,16 +139,17 @@ public class ShoebillDependencyManager
 				collectRequest.addRepository(repository);
 			}
 			
-			// Runtime
-			String runtimeCoord = resourceConfig.getRuntime();
-			if (runtimeCoord.contains(":"))
+			// Runtimes
+			for (String coord : resourceConfig.getRuntimes())
 			{
-				Artifact runtimeArtifact = new DefaultArtifact(resourceConfig.getRuntime());
-				collectRequest.addDependency(new Dependency(runtimeArtifact, SCOPE_RUNTIME));
-			}
-			else
-			{
-				System.out.println("Skipped artifact " + runtimeCoord + " (Runtime)");
+				if (coord.contains(":") == false)
+				{
+					System.out.println("Skipped artifact " + coord + " (Runtime)");
+					continue;
+				}
+				
+				Artifact artifact = new DefaultArtifact(coord);
+				collectRequest.addDependency(new Dependency(artifact, SCOPE_RUNTIME));
 			}
 			
 			// Plugins
@@ -159,6 +160,7 @@ public class ShoebillDependencyManager
 					System.out.println("Skipped artifact " + coord + " (Plugin)");
 					continue;
 				}
+				
 				Artifact artifact = new DefaultArtifact(coord);
 				collectRequest.addDependency(new Dependency(artifact, SCOPE_RUNTIME));
 			}
