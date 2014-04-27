@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2012 JoJLlmAn
- * Copyright (C) 2012 MK124
+ * Copyright (C) 2012-2014 MK124
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -126,7 +126,8 @@ public class ShoebillDependencyManager
 			
 			session.setRepositoryListener(new ShoebillRepositoryListener());
 			session.setUpdatePolicy(resourceConfig.getCacheUpdatePolicy());
-
+			session.setOffline(resourceConfig.isOfflineMode());
+			
 			for (RepositoryEntry repo : resourceConfig.getRepositories())
 			{
 				Authentication auth = null;
