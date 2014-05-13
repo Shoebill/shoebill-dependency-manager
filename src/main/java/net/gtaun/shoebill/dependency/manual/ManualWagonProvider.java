@@ -29,6 +29,7 @@ import org.eclipse.aether.connector.wagon.WagonProvider;
  */
 public class ManualWagonProvider implements WagonProvider
 {
+	@Override
 	public Wagon lookup(String roleHint) throws Exception
 	{
 		if ("http".equals(roleHint)) return new HttpWagon();
@@ -39,6 +40,7 @@ public class ManualWagonProvider implements WagonProvider
 		return null;
 	}
 	
+	@Override
 	public void release(Wagon wagon)
 	{
 		

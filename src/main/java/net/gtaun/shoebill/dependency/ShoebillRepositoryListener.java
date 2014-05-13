@@ -31,28 +31,33 @@ public class ShoebillRepositoryListener extends AbstractRepositoryListener
 		
 	}
 	
+	@Override
 	public void artifactDescriptorInvalid(RepositoryEvent event)
 	{
 		System.out.println("Invalid artifact descriptor for " + event.getArtifact() + ": " + event.getException().getMessage());
 	}
 	
+	@Override
 	public void artifactDescriptorMissing(RepositoryEvent event)
 	{
 		System.out.println("Missing artifact descriptor for " + event.getArtifact());
 	}
 	
+	@Override
 	public void artifactResolved(RepositoryEvent event)
 	{
 		if (event.getArtifact().getExtension().equals("pom")) return;
 		System.out.println("Resolved artifact " + event.getArtifact() + " from " + event.getRepository().getId());
 	}
 	
+	@Override
 	public void artifactDownloading(RepositoryEvent event)
 	{
 		if (event.getArtifact().getExtension().equals("pom")) return;
 		System.out.println("Downloading artifact " + event.getArtifact() + " from " + event.getRepository().getId());
 	}
 	
+	@Override
 	public void artifactDownloaded(RepositoryEvent event)
 	{
 		if (event.getArtifact().getExtension().equals("pom")) return;
@@ -60,6 +65,7 @@ public class ShoebillRepositoryListener extends AbstractRepositoryListener
 		System.out.println("Downloaded artifact " + event.getArtifact() + " from " + event.getRepository().getId());
 	}
 	
+	@Override
 	public void metadataInvalid(RepositoryEvent event)
 	{
 		System.out.println("Invalid metadata " + event.getMetadata());
