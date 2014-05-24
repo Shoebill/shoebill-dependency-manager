@@ -53,15 +53,15 @@ import org.eclipse.aether.util.graph.visitor.PreorderNodeListGenerator;
 import org.eclipse.aether.util.repository.AuthenticationBuilder;
 
 /**
- * 
- * 
+ *
+ *
  * @author JoJLlmAn, MK124
  */
 public class ShoebillDependencyManager
 {
 	private static final String VERSION_FILENAME = "/version.yml";
 	private static final String SHOEBILL_CONFIG_PATH = "./shoebill/shoebill.yml";
-	
+
 	private static final String PROPERTY_JAR_FILES = "jarFiles";
 	private static final String SCOPE_RUNTIME = "runtime";
 
@@ -73,20 +73,20 @@ public class ShoebillDependencyManager
 			return name.endsWith(".jar");
 		}
 	};
-	
+
 	static
 	{
 		DependencyManagerVersion version = new DependencyManagerVersion(ShoebillDependencyManager.class.getResourceAsStream(VERSION_FILENAME));
-		
+
 		String startupMessage = version.getName() + " " + version.getVersion();
 		if (version.getBuildNumber() != 0) startupMessage += " Build " + version.getBuildNumber();
 		startupMessage += " (for " + version.getSupport() + ")";
-		
+
 		System.out.println(startupMessage);
 		System.out.println("Build date: " + version.getBuildDate());
 	}
-	
-	
+
+
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws Throwable
 	{
@@ -94,40 +94,47 @@ public class ShoebillDependencyManager
 		List<File> files = List.class.cast(properties.get(PROPERTY_JAR_FILES));
 		for (File file : files) System.out.println(file);
 	}
-	
+
 	public static Map<String, Object> resolveDependencies() throws Throwable
 	{
 		ShoebillConfig shoebillConfig = new ShoebillConfig(new FileInputStream(SHOEBILL_CONFIG_PATH));
 		ResourceConfig resourceConfig = new ResourceConfig(new FileInputStream(new File(shoebillConfig.getShoebillDir(), "resources.yml")));
 		ShoebillArtifactLocator artifactLocator = new ShoebillArtifactLocator(shoebillConfig, resourceConfig);
-		
+
+		File onlineModeOnceFile = new File(shoebillConfig.getShoebillDir(), "ONLINE_MODE_ONCE");
+		if (onlineModeOnceFile.exists())
+		{
+			onlineModeOnceFile.delete();
+			resourceConfig.setOfflineMode(false);
+		}
+
 		final File repoDir = shoebillConfig.getRepositoryDir();
 		final File libDir = shoebillConfig.getLibrariesDir();
 		final File pluginsDir = shoebillConfig.getPluginsDir();
 		final File gamemodesDir = shoebillConfig.getGamemodesDir();
-		
+
 		File[] libJarFiles = libDir.listFiles(JAR_FILENAME_FILTER);
 		File[] pluginsJarFiles = pluginsDir.listFiles(JAR_FILENAME_FILTER);
 		File[] gamemodesJarFiles = gamemodesDir.listFiles(JAR_FILENAME_FILTER);
-		
+
 		List<File> files = new ArrayList<>();
-		
+
 		if(libJarFiles != null) files.addAll(Arrays.asList(libJarFiles));
 		if(pluginsJarFiles != null) files.addAll(Arrays.asList(pluginsJarFiles));
 		if(gamemodesJarFiles != null) files.addAll(Arrays.asList(gamemodesJarFiles));
-		
+
 		if (shoebillConfig.isResolveDependencies())
 		{
 			System.out.println("Resolving dependencies...");
-			
+
 			RepositorySystem repoSystem = AetherUtil.newRepositorySystem();
 			DefaultRepositorySystemSession session = AetherUtil.newRepositorySystemSession(repoSystem, repoDir);
 			CollectRequest collectRequest = new CollectRequest();
-			
+
 			session.setRepositoryListener(new ShoebillRepositoryListener());
 			session.setUpdatePolicy(resourceConfig.getCacheUpdatePolicy());
 			session.setOffline(resourceConfig.isOfflineMode());
-			
+
 			for (RepositoryEntry repo : resourceConfig.getRepositories())
 			{
 				Authentication auth = null;
@@ -138,24 +145,24 @@ public class ShoebillDependencyManager
 				{
 					auth = new AuthenticationBuilder().addUsername(username).addPassword(password).build();
 				}
-				
+
 				RemoteRepository repository = new RemoteRepository.Builder(repo.getId(), repo.getType(), repo.getUrl())
 					.setAuthentication(auth)
 					.build();
-				
+
 				collectRequest.addRepository(repository);
 			}
-			
+
 			BiConsumer<String, Artifact> checkOverrideDependencies = (coord, artifact) ->
 			{
 				File file = artifactLocator.getOverrideFile(coord);
 				if (file == null) return;
-				
+
 				try (JarFile jarFile = new JarFile(file))
 				{
 					ZipEntry entry = jarFile.getEntry("META-INF/maven/" + artifact.getGroupId() + "/" + artifact.getArtifactId() + "/pom.xml");
 					if (entry == null) throw new FileNotFoundException();
-					
+
 					Model model = new MavenXpp3Reader().read(jarFile.getInputStream(entry));
 					model.getDependencies().forEach((d) ->
 					{
@@ -168,7 +175,7 @@ public class ShoebillDependencyManager
 					System.out.println("Missing artifact descriptor for overridden jar: " + file.getPath());
 				}
 			};
-			
+
 			// Runtimes
 			for (String coord : resourceConfig.getRuntimes())
 			{
@@ -177,12 +184,12 @@ public class ShoebillDependencyManager
 					System.out.println("Skipped artifact " + coord + " (Runtime)");
 					continue;
 				}
-				
+
 				Artifact artifact = new DefaultArtifact(coord);
 				collectRequest.addDependency(new Dependency(artifact, SCOPE_RUNTIME));
 				checkOverrideDependencies.accept(coord, artifact);
 			}
-			
+
 			// Plugins
 			for (String coord : resourceConfig.getPlugins())
 			{
@@ -191,12 +198,12 @@ public class ShoebillDependencyManager
 					System.out.println("Skipped artifact " + coord + " (Plugin)");
 					continue;
 				}
-				
+
 				Artifact artifact = new DefaultArtifact(coord);
 				collectRequest.addDependency(new Dependency(artifact, SCOPE_RUNTIME));
 				checkOverrideDependencies.accept(coord, artifact);
 			}
-			
+
 			// Gamemode
 			String gamemodeCoord = resourceConfig.getGamemode();
 			if (gamemodeCoord.contains(":"))
@@ -209,7 +216,7 @@ public class ShoebillDependencyManager
 			{
 				System.out.println("Skipped artifact " + gamemodeCoord + " (Gamemode)");
 			}
-			
+
 			DependencyNode node = null;
 			try
 			{
@@ -219,10 +226,10 @@ public class ShoebillDependencyManager
 			{
 				e.printStackTrace();
 			}
-			
+
 			DependencyRequest dependencyRequest = new DependencyRequest(node, null);
 			dependencyRequest.setFilter(new ShoebillDependencyFilter(artifactLocator));
-			
+
 			try
 			{
 				repoSystem.resolveDependencies(session, dependencyRequest);
@@ -231,10 +238,10 @@ public class ShoebillDependencyManager
 			{
 				e.printStackTrace();
 			}
-			
+
 			PreorderNodeListGenerator nlg = new PreorderNodeListGenerator();
 			node.accept(nlg);
-			
+
 			files.addAll(nlg.getFiles());
 		}
 		else
