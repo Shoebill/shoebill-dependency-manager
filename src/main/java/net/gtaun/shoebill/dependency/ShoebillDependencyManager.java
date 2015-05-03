@@ -17,24 +17,10 @@
 
 package net.gtaun.shoebill.dependency;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.jar.JarFile;
-import java.util.zip.ZipEntry;
-
 import net.gtaun.shoebill.ResourceConfig;
 import net.gtaun.shoebill.ResourceConfig.RepositoryEntry;
 import net.gtaun.shoebill.ShoebillArtifactLocator;
 import net.gtaun.shoebill.ShoebillConfig;
-
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.eclipse.aether.DefaultRepositorySystemSession;
@@ -52,6 +38,15 @@ import org.eclipse.aether.resolution.DependencyResolutionException;
 import org.eclipse.aether.util.graph.visitor.PreorderNodeListGenerator;
 import org.eclipse.aether.util.repository.AuthenticationBuilder;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
+import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
+
 /**
  *
  *
@@ -65,14 +60,7 @@ public class ShoebillDependencyManager
 	private static final String PROPERTY_JAR_FILES = "jarFiles";
 	private static final String SCOPE_RUNTIME = "runtime";
 
-	private static final FilenameFilter JAR_FILENAME_FILTER = new FilenameFilter()
-	{
-		@Override
-		public boolean accept(File dir, String name)
-		{
-			return name.endsWith(".jar");
-		}
-	};
+	private static final FilenameFilter JAR_FILENAME_FILTER = (dir, name) -> name.endsWith(".jar");
 
 	static
 	{
