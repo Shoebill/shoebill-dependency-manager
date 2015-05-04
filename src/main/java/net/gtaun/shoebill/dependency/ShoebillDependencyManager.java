@@ -38,10 +38,9 @@ import org.eclipse.aether.resolution.DependencyResolutionException;
 import org.eclipse.aether.util.graph.visitor.PreorderNodeListGenerator;
 import org.eclipse.aether.util.repository.AuthenticationBuilder;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
+import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.jar.JarFile;
@@ -164,6 +163,9 @@ public class ShoebillDependencyManager
 				}
 			};
 
+			//Internal updates
+			if(!session.isOffline()) checkForUpdates();
+
 			// Runtimes
 			for (String coord : resourceConfig.getRuntimes())
 			{
@@ -240,5 +242,23 @@ public class ShoebillDependencyManager
 		Map<String, Object> properties = new HashMap<>();
 		properties.put(PROPERTY_JAR_FILES, files);
 		return properties;
+	}
+
+	private static void checkForUpdates() {
+		System.out.println("Checking for internal updates (plugin, dependency-manager, launcher)...");
+		ProcessBuilder processBuilder = new ProcessBuilder("java", "-jar", "shoebill-updater.jar", "onlyCheck");
+		Path currentRelativePath = Paths.get("");
+		String s = currentRelativePath.toAbsolutePath().toString();
+		processBuilder.directory(new File(s));
+		try {
+			Process p = processBuilder.start();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			String line;
+			while((line = reader.readLine()) != null)
+				System.out.println(line);
+			p.waitFor();
+		} catch (IOException | InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 }
