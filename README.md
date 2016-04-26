@@ -1,6 +1,6 @@
 # shoebill-dependency-manager
 
-[![Build Status](http://ci.gtaun.net/job/shoebill-dependency-manager/badge/icon)](http://ci.gtaun.net/job/shoebill-dependency-manager/)
+[![Build Status](http://ci.gtaun.net/app/rest/builds/buildType:(id:Shoebill_DependencyManager_Deploy)/statusIcon)](http://ci.gtaun.net/project.html?projectId=Shoebill_DependencyManager)
 
 # What is the shoebill-dependency-manager?
 
