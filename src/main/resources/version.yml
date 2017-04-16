@@ -1,5 +1,5 @@
 name: Shoebill Dependency Manager
 version: ${version}
-support: net.gtaun:shoebill-api:1.1
-buildNumber: ${build.number}
-buildDate: ${build.timestamp}
+support: net.gtaun:shoebill-api:2.0
+buildNumber: ${env.BUILD_NUMBER}
+buildDate: ${system.build.start.date}

@@ -16,14 +16,13 @@
 
 package net.gtaun.shoebill.dependency;
 
-import java.io.File;
-
 import net.gtaun.shoebill.dependency.manual.ManualRepositorySystemFactory;
-
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.repository.LocalRepository;
+
+import java.io.File;
 
 /**
  * 

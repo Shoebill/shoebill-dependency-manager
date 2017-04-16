@@ -20,27 +20,22 @@ import org.eclipse.aether.AbstractRepositoryListener;
 import org.eclipse.aether.RepositoryEvent;
 
 /**
- * 
- * 
  * @author MK124
+ * @author Marvin Haschker
  */
 public class ShoebillRepositoryListener extends AbstractRepositoryListener
 {
-	public ShoebillRepositoryListener()
-	{
-		
-	}
-	
 	@Override
 	public void artifactDescriptorInvalid(RepositoryEvent event)
 	{
-		System.out.println("Invalid artifact descriptor for " + event.getArtifact() + ": " + event.getException().getMessage());
+		System.err.println("Invalid artifact descriptor for " + event.getArtifact() + ": " + event.getException()
+				.getMessage());
 	}
 	
 	@Override
 	public void artifactDescriptorMissing(RepositoryEvent event)
 	{
-		System.out.println("Missing artifact descriptor for " + event.getArtifact());
+		System.err.println("Missing artifact descriptor for " + event.getArtifact());
 	}
 	
 	@Override
@@ -68,6 +63,6 @@ public class ShoebillRepositoryListener extends AbstractRepositoryListener
 	@Override
 	public void metadataInvalid(RepositoryEvent event)
 	{
-		System.out.println("Invalid metadata " + event.getMetadata());
+		System.err.println("Invalid metadata " + event.getMetadata());
 	}
 }

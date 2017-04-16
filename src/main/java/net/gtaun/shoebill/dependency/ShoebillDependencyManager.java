@@ -21,6 +21,8 @@ import net.gtaun.shoebill.ResourceConfig;
 import net.gtaun.shoebill.ResourceConfig.RepositoryEntry;
 import net.gtaun.shoebill.ShoebillArtifactLocator;
 import net.gtaun.shoebill.ShoebillConfig;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.eclipse.aether.DefaultRepositorySystemSession;
@@ -47,9 +49,9 @@ import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
 /**
- *
- *
- * @author JoJLlmAn, MK124
+ * @author JoJLlmAn
+ * @author MK124
+ * @author Marvin Haschker
  */
 public class ShoebillDependencyManager
 {
@@ -58,13 +60,20 @@ public class ShoebillDependencyManager
 
 	private static final String PROPERTY_JAR_FILES = "jarFiles";
 	private static final String SCOPE_RUNTIME = "runtime";
+	private static final DependencyManagerVersion version = new DependencyManagerVersion(
+			ShoebillDependencyManager.class.getResourceAsStream(VERSION_FILENAME));
 
 	private static final FilenameFilter JAR_FILENAME_FILTER = (dir, name) -> name.endsWith(".jar");
 
-	static
+	@SuppressWarnings("unchecked")
+	public static void main(String[] args) throws Throwable
 	{
-		DependencyManagerVersion version = new DependencyManagerVersion(ShoebillDependencyManager.class.getResourceAsStream(VERSION_FILENAME));
+		Map<String, Object> properties = resolveDependencies();
+		List<File> files = List.class.cast(properties.get(PROPERTY_JAR_FILES));
+		files.forEach(System.out::println);
+	}
 
+	private static void printStartupMessage() {
 		String startupMessage = version.getName() + " " + version.getVersion();
 		if (version.getBuildNumber() != 0) startupMessage += " Build " + version.getBuildNumber();
 		startupMessage += " (for " + version.getSupport() + ")";
@@ -73,17 +82,10 @@ public class ShoebillDependencyManager
 		System.out.println("Build date: " + version.getBuildDate());
 	}
 
-
-	@SuppressWarnings("unchecked")
-	public static void main(String[] args) throws Throwable
-	{
-		Map<String, Object> properties = resolveDependencies();
-		List<File> files = List.class.cast(properties.get(PROPERTY_JAR_FILES));
-		for (File file : files) System.out.println(file);
-	}
-
 	public static Map<String, Object> resolveDependencies() throws Throwable
 	{
+		Logger.getRootLogger().setLevel(Level.OFF);
+		printStartupMessage();
 		ShoebillConfig shoebillConfig = new ShoebillConfig(new FileInputStream(SHOEBILL_CONFIG_PATH));
 		ResourceConfig resourceConfig = new ResourceConfig(new FileInputStream(new File(shoebillConfig.getShoebillDir(), "resources.yml")));
 		ShoebillArtifactLocator artifactLocator = new ShoebillArtifactLocator(shoebillConfig, resourceConfig);
@@ -169,7 +171,7 @@ public class ShoebillDependencyManager
 			// Runtimes
 			for (String coord : resourceConfig.getRuntimes())
 			{
-				if (coord.contains(":") == false)
+				if (!coord.contains(":"))
 				{
 					System.out.println("Skipped artifact " + coord + " (Runtime)");
 					continue;
@@ -183,7 +185,7 @@ public class ShoebillDependencyManager
 			// Plugins
 			for (String coord : resourceConfig.getPlugins())
 			{
-				if (coord.contains(":") == false)
+				if (!coord.contains(":"))
 				{
 					System.out.println("Skipped artifact " + coord + " (Plugin)");
 					continue;

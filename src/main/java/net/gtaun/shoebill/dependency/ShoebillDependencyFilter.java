@@ -16,27 +16,24 @@
 
 package net.gtaun.shoebill.dependency;
 
-import java.io.File;
-import java.util.List;
-
 import net.gtaun.shoebill.ShoebillArtifactLocator;
-
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyFilter;
 import org.eclipse.aether.graph.DependencyNode;
 
+import java.io.File;
+import java.util.List;
+
 /**
- * 
- * 
  * @author MK124
+ * @author Marvin Haschker
  */
-public class ShoebillDependencyFilter implements DependencyFilter
+class ShoebillDependencyFilter implements DependencyFilter
 {
 	private ShoebillArtifactLocator artifactLocator;
-	
-	
-	public ShoebillDependencyFilter(ShoebillArtifactLocator locator)
+
+	ShoebillDependencyFilter(ShoebillArtifactLocator locator)
 	{
 		this.artifactLocator = locator;
 	}
