@@ -2,12 +2,6 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.sonatype.oss</groupId>
-		<artifactId>oss-parent</artifactId>
-		<version>7</version>
-	</parent>
-
 	<groupId>net.gtaun</groupId>
 	<artifactId>shoebill-dependency-manager</artifactId>
 	<version>1.0-SNAPSHOT</version>
@@ -18,17 +12,17 @@
 	<url>https://github.com/Shoebill</url>
 
 	<distributionManagement>
-		<repository>
-			<id>deployment</id>
-			<name>Releases</name>
-			<url>http://repo.gtaun.net/content/repositories/releases/</url>
-		</repository>
-		<snapshotRepository>
-			<id>deployment</id>
-			<name>Snapshots</name>
-			<url>http://repo.gtaun.net/content/repositories/snapshots/</url>
-		</snapshotRepository>
-	</distributionManagement>
+        	<repository>
+            	<id>deployment</id>
+            		<name>Releases</name>
+            		<url>http://repo.sampx.ru/repository/maven-releases/</url>
+        	</repository>
+	        <snapshotRepository>
+            		<id>deployment</id>
+            		<name>Snapshots</name>
+            		<url>http://repo.sampx.ru/repository/maven-snapshots/</url>
+        	</snapshotRepository>
+    	</distributionManagement
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -39,19 +33,12 @@
 	</properties>
 	
 	<repositories>
-		<repository>
-			<id>sonatype-nexus-snapshots</id>
-			<name>Sonatype Nexus Snapshots</name>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
-			</snapshots>
-		</repository>
-	</repositories>
+        	<repository>
+            		<id>gtaun-public-repo</id>
+            		<name>GTAUN Public Repository</name>
+            		<url>http://repo.sampx.ru/repository/maven-public/</url>
+       		</repository>
+    	</repositories
 
 	<licenses>
 		<license>
